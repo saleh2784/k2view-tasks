@@ -8,7 +8,7 @@ k2fabric stop
 
 # fabric/scripts/iid_finder_stop.sh
 
-sleep 10
+sleep 5
 
 ## Backup the config & fabric & apps
 
@@ -21,7 +21,7 @@ mv fabric $(k2fabric -version |awk '{print $2}'|head -n1)
 mv apps apps_bk
 
 #####################################################################
-    # Need vaildation for exisit folders before we run the script
+                # vaildation for exisit folders #
 #####################################################################
 
 CONFIG=config_fabric-6.5.4_96-HF2
@@ -47,13 +47,6 @@ else
     exit 1
 fi
 
-#/opt/apps/fabric/
-
-## back to the old names 
-## mv fabric-6.5.4_96-HF2/ fabric
-## rm -rf config_fabric-6.5.4_96-HF2/
-## mv apps_bk/ apps
-
 ## Download the fabric backage 
 
 echo "started to downloding the fabric package ...."
@@ -66,8 +59,27 @@ wget --no-check-certificate https://download.k2view.com/index.php/s/MqEoMNu9QuVn
 
 tar -zxvf download fabric apps
 
-## Check the current version 
+echo "#############################################################"
+echo " check the fabric & apps folders if are exists "
+echo "#############################################################"
 
+FABRIC_NEW=fabric
+if [ -d "$FABRIC_NEW" ]; then
+    echo "the folder $FABRIC_NEW ^^ exists ^^."
+else
+    echo "ERROR: the folder $FABRIC_NEW does not exist."
+    exit 1
+fi
+APPS_NEW=apps
+if [ -d "$APPS_NEW" ]; then
+    echo "the folder $APPS_NEW ^^ exists ^^."
+else
+    echo "ERROR: the folder $APPS_NEW does not exist."
+    exit 1
+fi
+
+echo "#####################################"
+echo "the new version is :"
 k2fabric -version
 
 sleep 5 
@@ -94,21 +106,8 @@ chmod +x upgrade_script.sh
            # 2. added the "security_profiles set<text>" in TABLE k2auth.roles
 ##############################################################################
 
-FABRIC_NEW=fabric
-if [ -d "$FABRIC_NEW" ]; then
-    echo "the folder $FABRIC_NEW ^^ exists ^^."
-else
-    echo "ERROR: the folder $FABRIC_NEW does not exist."
-    exit 1
-fi
-APPS_NEW=apps
-if [ -d "$APPS_NEW" ]; then
-    echo "the folder $APPS_NEW ^^ exists ^^."
-else
-    echo "ERROR: the folder $APPS_NEW does not exist."
-    exit 1
-fi
-sleep 10 
+
+sleep 5
 
 ## Start the fabric & iidfinder
 
