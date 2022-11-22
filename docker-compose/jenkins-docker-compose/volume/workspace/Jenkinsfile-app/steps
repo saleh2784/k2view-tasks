@@ -1,0 +1,16 @@
+cd / folder-location
+gi clone https://xxxxxxx
+vi test.rxr
+git add .
+git commit -m "first push" 
+git push origin
+git remote -v 
+git pull origin master
+git push origin master 
+git fetch origion master
+git config --global alias.st status
+git config --global alias.co commit
+git remote add saleh https://github.com/saleh2784/lab.git
+vi ~/.gitconfig
+
+

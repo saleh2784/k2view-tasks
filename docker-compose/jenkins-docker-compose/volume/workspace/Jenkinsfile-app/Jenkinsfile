@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Initialize') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Get SCM') {
+            steps {
+                git "https://github.com/saleh2784/lab.git"
+                sh "cat Jenkinsfile"
+            }
+        }
+        stage('docker build'){
+            steps {
+                sh "docker build -t nodewebapp . "
+                sh "docker images"
+            }
+        }
+        stage('docker Deploy'){
+            steps {
+                sh "docker run -itd nodewebapp &"  
+            }
+        }
+    }   
+}
+
