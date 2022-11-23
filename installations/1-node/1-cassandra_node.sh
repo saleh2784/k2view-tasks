@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 wget --no-check-certificate https://download.k2view.com/index.php/s/sCysXmOvIq3Ureq/download
 
 tar -zxvf download
@@ -9,11 +8,14 @@ sed -i '11i\alias python='/usr/bin/python2.7'\' ~/.bash_profile
 source ./.bash_profile
 # verified the Python version 
 python --version
+bash -l
 
 ######################################################################################
 #dc=DC1
 #cluster_name = cassandra
 ######################################################################################
+sleep 5
+
 sed -i "s@INSLATT_DIR=.*@INSLATT_DIR=$(pwd)@" .bash_profile
 rm -rf  cassandra/data && ln -s /opt/apps/cassandra/storage/  cassandra/data
 sed -i 's@dc=.*@dc=DC1@' $INSLATT_DIR/cassandra/conf/cassandra-rackdc.properties
@@ -31,13 +33,16 @@ echo "cassandra cassandra" >> ~/cassandra/conf/.jmxremote.password
 echo "k2view Q1w2e3r4t5" >> ~/cassandra/conf/.jmxremote.password
 chmod 400 ~/cassandra/conf/.jmxremote.password
 
-
+sleep 5
 ######################################################################################
+echo "start cassandra service"
 
 cassandra 
 
+
 ######################################################################################
 
+echo "create user k2admin"
 
 echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" |cqlsh -u cassandra -p cassandra
 
@@ -46,8 +51,3 @@ echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" |cqlsh -u cassa
 #Check cassandra's status 
 
 nodetool -u cassandra -pw cassandra status
-
-
-#run on 3 nodes 
-
-#nodetool -u  cassandra -pw  cassandra repair 
