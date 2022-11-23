@@ -1,0 +1,132 @@
+version: "2"
+services:
+    kafka:
+        image: "${KAFKA_IMAGE}"
+        # volumes:
+        #     - /home/k2view/VOLUMES-DONT-DELETE/kafka:/home/kafka/data
+        networks:
+            fab-net:
+                ipv4_address: "${KAFKA_IP}"
+        user: kafka
+        container_name: kafka
+        ports:
+            - "9093:9093"
+            - "2181:2181"
+            - "3888:3888"
+        environment:
+            K2_HOME: "/opt/apps/kafka"
+        entrypoint:
+            - bash
+            - -l
+            - -c
+            - "(/opt/apps/kafka/init.sh &) && (zookeeper-server-start /opt/apps/kafka/kafka/zookeeper.properties &) && sleep 10 && (kafka-server-start /opt/apps/kafka/kafka/server.properties &) && sleep INFINITY"
+    cassandra:
+        image: "${CASSANDRA_IMAGE}"
+        # volumes:
+        #     - /home/k2view/VOLUMES-DONT-DELETE/cassandra1:/home/cassandra/storage
+        networks:
+            fab-net:
+                ipv4_address: "${CASSANDRA_IP}"
+        privileged: true
+        container_name: cassandra
+        ports:
+            - "7000:7000"
+            - "7001:7001"
+            - "7199:7199"
+            - "9042:9042"
+            - "9160:9160"
+        entrypoint:
+            - bash
+            - -l
+            - -c
+            - "(/opt/apps/cassandra/init.sh &) && sleep 10 && (cassandra -R) && sleep INFINITY"
+    ldap:
+        image: "${LDAP_IMAGE}"
+        # volumes:
+        #     - /home/k2view/VOLUMES-DONT-DELETE/tdm:/usr/local/k2view/storage
+        user: "k2view"
+        networks:
+            fab-net:
+                ipv4_address: "${LDAP_PUBLIC_IP}"
+        # privileged: true
+        stdin_open: true
+        tty: true
+        container_name: ldap
+        ports:
+            - "10389:10389"
+        environment:
+            COMPOSE_HTTP_TIMEOUT: 200
+        entrypoint:
+            - bash
+            - -l
+            - -c
+            - 'cd /usr/local/k2view/apps/ && ./apacheds-2.0.0-M23-k2view-ldap start && sleep INFINITY'
+    fabric:
+        image: "${FABRIC_IMAGE}"
+        # volumes:
+        #     - /home/k2view/VOLUMES-DONT-DELETE/fabric:/usr/local/k2view/storage
+        user: "${CONTAIENR_USER}"
+        networks:
+            fab-net:
+                ipv4_address: "${FABRIC_IP}"
+        privileged: true
+        container_name: fabric
+        ports:
+            - "3213:3213"
+            - "5124:5124"
+            - "4001:4001"
+            - "3000:3000"
+            - "6379:6379"
+        depends_on:
+            - "cassandra"
+            - "kafka"
+        environment:
+            COMPOSE_HTTP_TIMEOUT: 200
+            K2_HOME_DOCKER: "${K2_HOME_DOCKER}"
+            SEED_IP: "${SEED_IP}"
+            FABRIC_IP: "${FABRIC_IP}"
+            KAFKA_IP: "${KAFKA_IP}"
+            CLUSTER_NAME: "${CLUSTER_NAME}"
+            AUTH_REPLICATION_FACTOR: "${AUTH_REPLICATION_FACTOR}"
+            NUM_OF_NODES: "${NUM_OF_NODES}"
+            DC_NAME: "${DC_NAME}"
+            RACK: "${RACK}"
+            MAX_HEAP_SIZE: "${MAX_HEAP_SIZE}"
+            HEAP_NEWSIZE: "${HEAP_NEWSIZE}"
+            PG_HOST: "${PG_IP}"
+            PG_PORT: "${PG_PORT}"
+            PG_USER: "${PG_USER}"
+            DB: "${DB}"
+            PGPASSWORD: "${PGPASSWORD}"
+            LDAP_PUBLIC_IP: "${LDAP_PUBLIC_IP}"
+            TDM_PUBLIC_IP: "${TDM_Public_IP}"
+            liveliness: "${liveliness}"
+            liveliness_interval: "${liveliness_interval}"
+        entrypoint:
+            - bash
+            - -l
+            - -c
+            - '(cp -r /usr/local/k2view/fabric/config.template /usr/local/k2view/config) && (sed -i s/"#HOSTS=.*"/"HOSTS=$SEED_IP"/g /usr/local/k2view/config/config.ini) && (sed -i "s@#USER=.*@USER=cassandra@" /usr/local/k2view/config/config.ini) && (sed -i "s@#PASSWORD=.*@PASSWORD=cassandra@" /usr/local/k2view/config/config.ini) && (sed -i "s@#MESSAGES_BROKER_TYPE=.*@MESSAGES_BROKER_TYPE=KAFKA@" /usr/local/k2view/config/config.ini) && (sed -i "s@#BOOTSTRAP_SERVERS=.*@BOOTSTRAP_SERVERS=$KAFKA_IP:9093@" /usr/local/k2view/config/config.ini) && (sleep 40) && (k2fabric start) && (sleep INFINITY)'
+    pg:
+        image: "${PG_IMAGE}"
+        # volumes:
+        #     - /home/k2view/VOLUMES-DONT-DELETE/tdm:/usr/local/k2view/storage
+        # user: "${CONTAIENR_USER}"
+        networks:
+            fab-net:
+                ipv4_address: "${PG_IP}"
+        privileged: true
+        stdin_open: true
+        tty: true
+        container_name: "${PGPASSWORD}"
+        ports:
+            - "5432:5432"
+        environment:
+            COMPOSE_HTTP_TIMEOUT: 200
+            POSTGRES_PASSWORD: "${PGPASSWORD}"
+networks:
+  fab-net:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: "${DOCKER_SUBNET}"

@@ -87,12 +87,16 @@ sleep 5
 ## Run the upgrade script "just in the first node"
 
 echo "started the upgrade ...."
-
+# K2_HOME
 cd /opt/apps/fabric/fabric/upgrade/toV6.5.8
 
 chmod +x upgrade_script.sh
 
 # without ssl NTC the user name & password & hostname & port
+# i will add if condetion for the first ip if = the first ip 
+# cqlsh -u k2admin -p Q1w2e3r4t5 --ssl
+# 10.237.98.149 : 9160
+
 
 ./upgrade_script.sh cassandra cassandra 10.21.3.48 9042
 
@@ -144,9 +148,9 @@ fi
 
 ## Run this command below in cqlsh : (cassandra node) NTV the table :
 # without ssl
-# cat DESC k2auth.roles ; |cqlsh -u cassandra -p cassandra
+# echo "DESC k2auth.roles ;" |cqlsh -u cassandra -p cassandra
 # with ssl
-# cat DESC k2auth.roles ; |cqlsh -u cassandra -p cassandra --ssl
+# echo "DESC k2auth.roles ;" |cqlsh -u cassandra -p cassandra --ssl
 
 
 

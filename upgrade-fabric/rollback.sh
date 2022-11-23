@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# need to backup the common storage
 k2fabric stop
 rm -rf download
 rm -rf fabric
@@ -8,3 +9,5 @@ mv fabric-6.5.4_96-HF2/ fabric
 rm -rf config_fabric-6.5.4_96-HF2/
 mv apps_bk/ apps
 k2fabric start
+k2fabric -version
+ll
