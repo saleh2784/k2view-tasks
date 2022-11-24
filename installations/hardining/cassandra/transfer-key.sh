@@ -8,6 +8,7 @@
 # cp keys.tar.gz -i k.pem cassandra@10.10.10.10:/opt/apps/cassandra/
 
 cp keys.tar.gz cassandra@10.10.10.10:/opt/apps/cassandra/
+cp keys.tar.gz cassandra@10.10.10.11:/opt/apps/cassandra/
 
 
-pscp -pw 'MyPa$$word' username@servername:/somedir/somefile ~/somedest
+# pscp -pw 'MyPa$$word' username@servername:/somedir/somefile ~/somedest

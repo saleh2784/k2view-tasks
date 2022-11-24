@@ -10,6 +10,10 @@ stop-server
 
 ## login to every node searately and run the following command:
 
+# cp /tmp/keys.tar.gz /opt/apps/cassandra
+# cp /tmp/keys.tar.gz /opt/apps/fabric
+
+
 mkdir -p $INSLATT_DIR/.cassandra_ssl && tar -zxvf keys.tar.gz -C $INSLATT_DIR/.cassandra_ssl
 
 

@@ -1,0 +1,7 @@
+cserver1=10.0.50.51
+cserver2=10.0.50.52
+cserver3=10.0.50.53
+
+kserver1=10.0.50.51
+kserver2=10.0.50.52
+kserver3=10.0.50.53

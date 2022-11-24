@@ -44,14 +44,13 @@ sed-i "s @K2_HOME=.*@K2_HOME=$(pwd)@".bash_profile
 bash -l 
 
 
+cserver1=10.0.50.51
+cserver2=10.0.50.52
+cserver3=10.0.50.53
 
-export cserver1=10.0.50.51
-export cserver2=10.0.50.52
-export cserver3=10.0.50.53
-
-export kserver1=10.0.50.51
-export kserver2=10.0.50.52
-export kserver3=10.0.50.53
+kserver1=10.0.50.51
+kserver2=10.0.50.52
+kserver3=10.0.50.53
 
 cp -r $K2_HOME/fabric/config.template $K2_HOME/config
 

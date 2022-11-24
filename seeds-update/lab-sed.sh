@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ## the current tombstone values :  ##
+echo "Current values are :"
 cat /opt/apps/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_warn
 cat /opt/apps/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_failure
 
@@ -9,6 +10,7 @@ sed -i "s@tombstone_warn_threshold:.*@tombstone_warn_threshold: 100000@" /opt/ap
 sed -i "s@tombstone_failure_threshold:.*@tombstone_failure_threshold: 500000@" /opt/apps/cassandra/cassandra/conf/cassandra.yaml
 
 ## check with cat ##
+echo "New values are :"
 cat /opt/apps/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_warn
 cat /opt/apps/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_failure
 
@@ -58,7 +60,7 @@ echo "start the cassandra service"
 
 cassandra
 
-sleep 20
+sleep 15
 
 if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 2 ))
 then
