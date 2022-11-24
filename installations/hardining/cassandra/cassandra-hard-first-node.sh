@@ -2,10 +2,11 @@
 
 stop-server
 
-echo "export K2_HOME=$INSLATT_DIR" >> .bash_profile
-echo "export INSTALL_DIR=$INSLATT_DIR" >> .bash_profile
-source ~/.bash_profile
-cd ~/
+# echo "export K2_HOME=$INSLATT_DIR" >> .bash_profile
+# echo "export INSTALL_DIR=$INSLATT_DIR" >> .bash_profile
+# source ~/.bash_profile
+# cd ~/
+
 rm -rf .cassandra .cassandra_ssl .oracle_jre_usage .ssl
 
 chmod +x secure_cassandra.sh
@@ -13,6 +14,11 @@ chmod +x secure_cassandra.sh
 ./secure_cassandra.sh Q1w2e3r4t5 cassandra
 
 tar -czvf keys.tar.gz -C $INSLATT_DIR/.cassandra_ssl .
+
+## for one node use this command 
+
+#cp keys.tar.gz /tmp/
+
 
 #############################################################################
 ## Transfer Keys and Certificates to All Cassandra and Fabric Nodes
@@ -62,5 +68,11 @@ sed -i "s@hostname = .*@hostname = $(hostname -I |awk {'print $1'})@" $INSLATT_D
 
 # connect to one of the Cassandra nodes console, and create 2 new superuser's
 
+cassandra
+
 echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" | cqlsh -u cassandra -p cassandra $(hostname -i) 9142 --ssl
 echo "create user k2sysdba with password '3ptBF9eMSsyLrXr3' superuser;" | cqlsh -u cassandra -p cassandra $(hostname -i) 9142 --ssl
+
+## NTC how to do auto approve for the #Trust this certificate#
+#Trust this certificate? [no]:  yes
+#Certificate was added to keystore

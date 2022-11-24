@@ -2,6 +2,7 @@
 
 ## after we copied the key to the fabric nodes ##
 
+cp /tmp/Kafka_keyz.tar.gz /opt/apps/fabric
 
 ## on the Fabric nodes use the following to extract
 

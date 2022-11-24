@@ -11,11 +11,14 @@
 cd $K2_HOME
 chmod +x secure_kafka.sh
 # if openssl is not installed - login with root
-yum install openssl
+yum install openssl -y
 
 ./secure_kafka.sh Q1w2e3r4t5
 
 tar -czvf Kafka_keyz.tar.gz -C $K2_HOME/.kafka_ssl .
+
+# for one node use this command :
+cp Kafka_keyz.tar.gz /tmp/
 
 ## copy to other kafka nodes and fabric
 
@@ -46,9 +49,6 @@ Client {
     password="kafka";
 };' > $CONFLUENT_HOME/zookeeper_jaas.conf
 
-## Start the ZooKeeper Service
-
-export KAFKA_OPTS="-Djava.security.auth.login.config=$CONFLUENT_HOME/zookeeper_jaas.conf" && ~/kafka/bin/zookeeper-server-start -daemon ~/kafka/zookeeper.properties
 
 ## Note that the following steps must be applied for each node in cluster.
 ## SSL Authentication
@@ -83,7 +83,12 @@ Client {
     password="kafka";
 };' > $CONFLUENT_HOME/kafka_server_jaas.conf
 
-## Start the Kafka Server
+
+## Start the ZooKeeper Service
+
+export KAFKA_OPTS="-Djava.security.auth.login.config=$CONFLUENT_HOME/zookeeper_jaas.conf" && ~/kafka/bin/zookeeper-server-start -daemon ~/kafka/zookeeper.properties
+
+sleep 10
 
 export KAFKA_OPTS="-Djava.security.auth.login.config=$CONFLUENT_HOME/kafka_server_jaas.conf" && ~/kafka/bin/kafka-server-start -daemon ~/kafka/server.properties
 
