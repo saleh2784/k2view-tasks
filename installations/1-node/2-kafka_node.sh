@@ -8,6 +8,8 @@ tar -zxvf download && bash -l date && echo "run seeds"
 ######################################################################################
 
 ######################################################################################
+echo "Run seds .........."
+
 kserver1=$(hostname -I |awk {'print $1'})
 
 if [ "$(hostname -I |awk {'print $1'})" == "$kserver1" ]; then echo 1 > $K2_HOME/zk_data/myid; fi
@@ -30,8 +32,10 @@ echo "server.1=$kserver1:2888:3888" >> $CONFLUENT_HOME/zookeeper.properties
 
 #Start Kafka and Zookeeper:
 
+echo "Start Kafka and Zookeeper"
+
 $K2_HOME/kafka/bin/zookeeper-server-start -daemon $K2_HOME/kafka/zookeeper.properties
-sleep 10
+sleep 5
 $K2_HOME/kafka/bin/kafka-server-start -daemon $K2_HOME/kafka/server.properties
 
 
@@ -44,6 +48,7 @@ sleep 5
 jps
 
 echo " check the brokers ids"
+
 sleep 5
 
 $CONFLUENT_HOME/bin/zookeeper-shell localhost:2181 <<< "ls /brokers/ids"
