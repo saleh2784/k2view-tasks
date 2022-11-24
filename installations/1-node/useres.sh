@@ -28,4 +28,5 @@ echo "fs.file-max = 1000000" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_keepalive_time = 60" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_keepalive_probes = 3" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_keepalive_intvl = 10" >> /etc/sysctl.conf
+
 sysctl -p

@@ -1,6 +1,7 @@
 #!/bin/bash
+echo "Download cassandra version  3.11.9"
 
-wget --no-check-certificate https://download.k2view.com/index.php/s/sCysXmOvIq3Ureq/download
+wget --no-check-certificate https://download.k2view.com/index.php/s/n7H7bZs2HMKKZF7/download
 
 tar -zxvf download
 

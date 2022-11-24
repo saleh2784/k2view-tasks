@@ -2,13 +2,13 @@
 
 wget --no-check-certificate https://download.k2view.com/index.php/s/g9IZQIDKDwaULGo/download
 
-tar -zxvf download bash -l
+tar -zxvf download && bash -l date && echo "run seeds"
 
 
 ######################################################################################
 
 ######################################################################################
-export kserver1=$(hostname -I |awk {'print $1'})
+kserver1=$(hostname -I |awk {'print $1'})
 
 if [ "$(hostname -I |awk {'print $1'})" == "$kserver1" ]; then echo 1 > $K2_HOME/zk_data/myid; fi
 if [ "$(hostname -I |awk {'print $1'})" == "$kserver1" ]; then sed -i "s@broker.id=.@broker.id=1@" $CONFLUENT_HOME/server.properties ; fi
@@ -39,9 +39,13 @@ $K2_HOME/kafka/bin/kafka-server-start -daemon $K2_HOME/kafka/server.properties
 
 # Verify the Kafka and Zookeeper are running:
 
+sleep 10 
+
+jps
+
 $CONFLUENT_HOME/bin/zookeeper-shell localhost:2181 <<< "ls /brokers/ids"
 
 ######################################################################################
 
-jps
+
 
