@@ -43,11 +43,11 @@ cassandra
 
 ######################################################################################
 
-echo "create user k2admin"
+# echo "create user k2admin"
 
-echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" |cqlsh -u cassandra -p cassandra
+# echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" |cqlsh -u cassandra -p cassandra
 
-######################################################################################
+#######################################################################################
 
 #Check cassandra's status 
 

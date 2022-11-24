@@ -17,7 +17,7 @@ tar -czvf keys.tar.gz -C $INSLATT_DIR/.cassandra_ssl .
 
 ## for one node use this command 
 
-#cp keys.tar.gz /tmp/
+cp keys.tar.gz /tmp/
 
 
 #############################################################################

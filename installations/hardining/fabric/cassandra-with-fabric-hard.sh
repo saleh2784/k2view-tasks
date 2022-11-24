@@ -2,7 +2,6 @@
 
 cp /tmp/keys.tar.gz /opt/apps/fabric
 
-
 #tar -czvf keys.tar.gz -C opt/apps/fabric/.cassandra_ssl .
 # copy to all Fabric nodes
 # 172.27.0.102 represents IP address of each node
