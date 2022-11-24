@@ -1,30 +1,33 @@
 #!/bin/bash
 
 wget --no-check-certificate https://download.k2view.com/index.php/s/IqMl8VVsfg24aY8/download
-tar -zxvf download bash -l
+
+tar -zxvf download && bash -l date &&
 
 sed -i "s@K2_HOME=.*@K2_HOME=$(pwd)@" .bash_profile
-bash -l 
+
+bash -l date && echo "run seeds"
 
 ######################################################################################
 
 ######################################################################################
-   # Cassandra IP
-   export cserver1=$(hostname -I |awk {'print $1'})
-   # Kafka IP
-   export kserver1=$(hostname -I |awk {'print $1'})
-   cp -r $K2_HOME/fabric/config.template $K2_HOME/config
+# Cassandra IP
+cserver1=$(hostname -I |awk {'print $1'})
+# Kafka IP
+kserver1=$(hostname -I |awk {'print $1'})
 
-   # update heap memory if you have minimume of 32G
-   ## sed -i 's@-Xmx2G@-Xmx8G@' $INSLATT_DIR/config/jvm.options
-   ## sed -i 's@-Xms2G@-Xms8G@' $INSLATT_DIR/config/jvm.options
+cp -r $K2_HOME/fabric/config.template $K2_HOME/config
 
-   cp config/adminInitialCredentials.template config/adminInitialCredentials
-   sed -i 's@user.*@k2consoleadmin/KW4RVG98RR9xcrTv@' config/adminInitialCredentials
+# update heap memory if you have minimume of 32G
+## sed -i 's@-Xmx2G@-Xmx8G@' $INSLATT_DIR/config/jvm.options
+## sed -i 's@-Xms2G@-Xms8G@' $INSLATT_DIR/config/jvm.options
 
-   sed -i 's@#REPLICATION_OPTIONS=.*@REPLICATION_OPTIONS={ '"'"'class'"'"' : '"'"'NetworkTopologyStrategy'"'"', '"'"DC1"'"' : 1}@' $K2_HOME/config/config.ini
-   sed -i "s@#HOSTS=.*@HOSTS=$cserver1@" $K2_HOME/config/config.ini
-   sed -i "s@#USER=.*@USER=k2admin@" $K2_HOME/config/config.ini
+cp config/adminInitialCredentials.template config/adminInitialCredentials
+sed -i 's@user.*@k2consoleadmin/KW4RVG98RR9xcrTv@' config/adminInitialCredentials
+
+sed -i 's@#REPLICATION_OPTIONS=.*@REPLICATION_OPTIONS={ '"'"'class'"'"' : '"'"'NetworkTopologyStrategy'"'"', '"'"DC1"'"' : 1}@' $K2_HOME/config/config.ini
+sed -i "s@#HOSTS=.*@HOSTS=$cserver1@" $K2_HOME/config/config.ini
+sed -i "s@#USER=.*@USER=k2admin@" $K2_HOME/config/config.ini
 
 
 ######################################################################################

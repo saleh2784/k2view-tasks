@@ -39,9 +39,12 @@ $K2_HOME/kafka/bin/kafka-server-start -daemon $K2_HOME/kafka/server.properties
 
 # Verify the Kafka and Zookeeper are running:
 
-sleep 10 
+sleep 5
 
 jps
+
+echo " check the brokers ids"
+sleep 5
 
 $CONFLUENT_HOME/bin/zookeeper-shell localhost:2181 <<< "ls /brokers/ids"
 
