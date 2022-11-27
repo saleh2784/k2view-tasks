@@ -202,6 +202,31 @@ resource "aws_instance" "nodes" {
   }
 }
 
+### Create AWS EC2 instance - windows ###
+
+resource "aws_instance" "windows-nodes" {
+  count = var.windows_count ## NTC 
+  depends_on = [aws_security_group.security_groups]
+
+  security_groups = [aws_security_group.studio.id] # NTC
+  subnet_id = local.ec2_nodes_list[count.index].public_subnet ? aws_subnet.pub_subnets[0].id : aws_subnet.priv_subnets[0].id
+
+  ami = var.ami-windows
+  key_name = var.key_pair_name_windows ## need to create 
+  instance_type = var.instance_type_windows
+
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
+
+  tags= {
+    Name = "studio_node"
+    Env         = var.env
+    Owner       = var.owner
+    Project     = var.project
+  }
+}
+
 ### Create AWS EC2 instance ###
 
 ###
@@ -217,72 +242,72 @@ resource "aws_instance" "nodes" {
 
     ### Creating ALB resource it self ###
 
-resource "aws_lb" "alb" {
-  name               = "${var.uniq}-ALB"
-  internal           = false
+# resource "aws_lb" "alb" {
+#   name               = "${var.uniq}-ALB"
+#   internal           = false
 
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.security_groups["alb"].id]
+#   load_balancer_type = "application"
+#   security_groups    = [aws_security_group.security_groups["alb"].id]
 
-  subnets            = [for sub in aws_subnet.pub_subnets: sub.id]
+#   subnets            = [for sub in aws_subnet.pub_subnets: sub.id]
 
-  # subnets            = [aws_subnet.pub_subnets[0].id, aws_subnet.pub_subnets[1].id]
+#   # subnets            = [aws_subnet.pub_subnets[0].id, aws_subnet.pub_subnets[1].id]
 
-  tags = {
-    Env         = var.env
-    Owner       = var.owner
-    Project     = var.project
-  }
+#   tags = {
+#     Env         = var.env
+#     Owner       = var.owner
+#     Project     = var.project
+#   }
 
-}
+# }
 
     ###  Creating empty fabric-node Target Group ###
 
       ### ALB related TG ###
 
-resource "aws_lb_target_group" "fabric_tg" {
-  name     = "${var.uniq}-fabric-target-group"
-  port     = var.fabric_app_listening_port # --  Ask louai what is fabric listening on (80 ?  / 443 ?) https ? http ?
-  protocol = var.fabric_app_listening_protocol  # --  Ask louai what s fabric listening on https ? http ?
-  vpc_id   = aws_vpc.vpc.id
-  depends_on = [
-    aws_lb.alb
-  ]
-}
+# resource "aws_lb_target_group" "fabric_tg" {
+#   name     = "${var.uniq}-fabric-target-group"
+#   port     = var.fabric_app_listening_port # --  Ask louai what is fabric listening on (80 ?  / 443 ?) https ? http ?
+#   protocol = var.fabric_app_listening_protocol  # --  Ask louai what s fabric listening on https ? http ?
+#   vpc_id   = aws_vpc.vpc.id
+#   depends_on = [
+#     aws_lb.alb
+#   ]
+# }
 
     ### Attaching Above Fabric-TG to Relavent Instace ###
 
-resource "aws_lb_target_group_attachment" "fabric_tg_attachment" {
-  target_group_arn = aws_lb_target_group.fabric_tg.arn
-  target_id        = element(aws_instance.nodes.*.id, index(local.ec2_nodes_names, "fabric"))
-  port             = var.fabric_app_listening_port
+# resource "aws_lb_target_group_attachment" "fabric_tg_attachment" {
+#   target_group_arn = aws_lb_target_group.fabric_tg.arn
+#   target_id        = element(aws_instance.nodes.*.id, index(local.ec2_nodes_names, "fabric"))
+#   port             = var.fabric_app_listening_port
 
-  depends_on = [
-    aws_lb_target_group.fabric_tg,
-    aws_lb.alb
-  ]
-}
+#   depends_on = [
+#     aws_lb_target_group.fabric_tg,
+#     aws_lb.alb
+#   ]
+# }
 
 
     ### Creating Listner resource & Attaching Dynamic target groups to above ALB ###
 
-resource "aws_lb_listener" "alb_https_listner" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+# resource "aws_lb_listener" "alb_https_listner" {
+#   load_balancer_arn = aws_lb.alb.arn
+#   port              = "80"
+#   protocol          = "HTTP"
 
-  depends_on = [
-    aws_lb_target_group.fabric_tg,
-    aws_lb_target_group_attachment.fabric_tg_attachment,
-#    aws_lb_listener.alb_https_listner,
-    aws_lb.alb
-  ]
+#   depends_on = [
+#     aws_lb_target_group.fabric_tg,
+#     aws_lb_target_group_attachment.fabric_tg_attachment,
+# #    aws_lb_listener.alb_https_listner,
+#     aws_lb.alb
+#   ]
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.fabric_tg.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.fabric_tg.arn
+#   }
+# }
 
 
 # resource "aws_lb_listener" "alb_https_listner" {
@@ -322,63 +347,63 @@ resource "aws_lb_listener" "alb_https_listner" {
 
     ### Creating NLB resource it self ###
 
-resource "aws_lb" "nlb" {
-  name               = "${var.uniq}-NLB"
-  internal           = false
-  load_balancer_type = "network"
+# resource "aws_lb" "nlb" {
+#   name               = "${var.uniq}-NLB"
+#   internal           = false
+#   load_balancer_type = "network"
 
-  subnets            = [aws_subnet.pub_subnets[0].id]
+#   subnets            = [aws_subnet.pub_subnets[0].id]
 
-  enable_deletion_protection = true
+#   enable_deletion_protection = true
 
-  tags = {
-    Env         = var.env
-    Owner       = var.owner
-    Project     = var.project
-  }
-}
+#   tags = {
+#     Env         = var.env
+#     Owner       = var.owner
+#     Project     = var.project
+#   }
+# }
 
     ### Attaching Dynamic target groups to NLB resource ###
 
     ### NLB related TGs ###
 
-resource "aws_lb_target_group" "fabric_tg_nlb" {
-  name     = "${var.uniq}-fabric-target-group-nlb"
-  port     = "22"
-  protocol = "TCP"
-  vpc_id   = aws_vpc.vpc.id
-  depends_on = [
-    aws_lb.nlb
-  ]
-}
+# resource "aws_lb_target_group" "fabric_tg_nlb" {
+#   name     = "${var.uniq}-fabric-target-group-nlb"
+#   port     = "22"
+#   protocol = "TCP"
+#   vpc_id   = aws_vpc.vpc.id
+#   depends_on = [
+#     aws_lb.nlb
+#   ]
+# }
 
         ### SSH Target Group (Fabric-Node) ###
 
-resource "aws_lb_target_group_attachment" "fabric_ssh_tg_attachment" {
-  target_group_arn = aws_lb_target_group.fabric_tg_nlb.arn
-  target_id        = element(aws_instance.nodes.*.id, index(local.ec2_nodes_names, "fabric"))
-  port             = "22"
+# resource "aws_lb_target_group_attachment" "fabric_ssh_tg_attachment" {
+#   target_group_arn = aws_lb_target_group.fabric_tg_nlb.arn
+#   target_id        = element(aws_instance.nodes.*.id, index(local.ec2_nodes_names, "fabric"))
+#   port             = "22"
 
-  depends_on = [
-    aws_lb_target_group.fabric_tg_nlb,
-    aws_lb.nlb
-  ]
-}
+#   depends_on = [
+#     aws_lb_target_group.fabric_tg_nlb,
+#     aws_lb.nlb
+#   ]
+# }
 
     ### Creating Listner resource & Attaching Dynamic target groups to above ALB ###
 
-resource "aws_lb_listener" "alb_ssh_listner" {
-  load_balancer_arn = aws_lb.nlb.arn
-  port              = "22"
-  protocol          = "TCP"
-  # certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
-  # alpn_policy       = "HTTP2Preferred"
+# resource "aws_lb_listener" "alb_ssh_listner" {
+#   load_balancer_arn = aws_lb.nlb.arn
+#   port              = "22"
+#   protocol          = "TCP"
+#   # certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+#   # alpn_policy       = "HTTP2Preferred"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.fabric_tg_nlb.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.fabric_tg_nlb.arn
+#   }
+# }
 
 ### NLB ###
 
