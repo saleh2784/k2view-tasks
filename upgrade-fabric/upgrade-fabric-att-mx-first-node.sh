@@ -84,6 +84,20 @@ k2fabric -version
 
 sleep 5 
 
+################################################################
+
+echo "is this env with hardening ? yes OR no "  
+read state
+
+if [ $state == "yes" ]
+then
+  sed -i 's/cqlsh -u$1 -p$2 $3 $4/cqlsh -u$1 -p$2 $3 $4 --ssl/' /opt/apps/fabric/fabric/upgrade/toV6.5.8/upgrade_script.sh
+else
+  echo "this env with hardening"
+fi
+################################################################
+# sed -i 's/cqlsh -u$1 -p$2 $3 $4/cqlsh -u$1 -p$2 $3 $4 --ssl/' /opt/apps/fabric/fabric/upgrade/toV6.5.8/upgrade_script.sh
+
 ## Run the upgrade script "just in the first node"
 
 echo "started the upgrade ...."
