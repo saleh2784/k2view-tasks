@@ -40,22 +40,26 @@ variable "ec2_nodes" {
       name = "postgres"
       public_subnet = false
     }
-    studio = {
-      name = "studio"
-      public_subnet = false
-    }
+    # studio = {
+    #   name = "studio"
+    #   public_subnet = false
+    # }
 
   }
   
 }
 
+variable "windows_count" {
+    description = " AWS Instance count."
+    default     = "1"
+}
 variable "instance_type" {
     description = "Default AWS Instance Type to provision AWS EC2 instances with !."
     default     = "t2.micro"
 }
 variable "instance_type_windows" {
     description = "Default AWS Instance Typev for windows to provision AWS EC2 instances with !."
-    default     = ""
+    default     = "t2.micro"
 }
 
 variable "ami" {
@@ -63,11 +67,14 @@ variable "ami" {
     description = "ami to provision AWS EC2 instances with !. - if left empty will choose latest amzn linux"
 }
 variable "ami-windows" {
-    default = ""
-    description = "ami to provision AWS EC2 instances with !. - if left empty will choose latest windows"
+    default = "ami-0dd4486f71af814de"
+    description = "Microsoft Windows Server 2016"
 }
 
 variable "key_pair_name" {
+    description = "Default ssh key to provision AWS EC2 instances with !."
+}
+variable "key_pair_name_windows" {
     description = "Default ssh key to provision AWS EC2 instances with !."
 }
 
