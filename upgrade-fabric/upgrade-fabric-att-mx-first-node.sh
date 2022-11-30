@@ -1,12 +1,13 @@
 #!/bin/bash
 
-## Stop fabric & iidfinder servers
+## Stop fabric & iidfinder servers 
+## first we need to stop the iidfider and fabric on all nodes 
 
 echo "stop fabric & iid-finder"
 
-k2fabric stop
+fabric/scripts/iid_finder_stop.sh
 
-# fabric/scripts/iid_finder_stop.sh
+k2fabric stop
 
 sleep 5
 
@@ -52,12 +53,15 @@ fi
 echo "started to downloding the fabric package ...."
 
 
-wget --no-check-certificate https://download.k2view.com/index.php/s/MqEoMNu9QuVnHeW/download 
+wget --no-check-certificate https://download.k2view.com/index.php/s/69viXSMGwZtUbrB/download 
 
 
 ## Untar the backage  "fabric & apps directoryes"
 
 tar -zxvf download fabric apps
+
+export FABRIC_HOME=$K2_HOME
+
 
 echo "#############################################################"
 echo " check the fabric & apps folders if are exists "
@@ -86,15 +90,15 @@ sleep 5
 
 ################################################################
 
-echo "is this env with hardening ? yes OR no "  
-read state
+# echo "is this env with hardening ? yes OR no "  
+# read state
 
-if [ $state == "yes" ]
-then
-  sed -i 's/cqlsh -u$1 -p$2 $3 $4/cqlsh -u$1 -p$2 $3 $4 --ssl/' /opt/apps/fabric/fabric/upgrade/toV6.5.8/upgrade_script.sh
-else
-  echo "this env with hardening"
-fi
+# if [ $state == "yes" ]
+# then
+#   sed -i 's/cqlsh -u$1 -p$2 $3 $4/cqlsh -u$1 -p$2 $3 $4 --ssl/' /opt/apps/fabric/fabric/upgrade/toV6.5.8/upgrade_script.sh
+# else
+#   echo "this env with hardening"
+# fi
 ################################################################
 # sed -i 's/cqlsh -u$1 -p$2 $3 $4/cqlsh -u$1 -p$2 $3 $4 --ssl/' /opt/apps/fabric/fabric/upgrade/toV6.5.8/upgrade_script.sh
 
@@ -102,7 +106,7 @@ fi
 
 echo "started the upgrade ...."
 # K2_HOME
-cd /opt/apps/fabric/fabric/upgrade/toV6.5.8
+cd $K2_HOME/fabric/upgrade/toV6.5.8
 
 chmod +x upgrade_script.sh
 
@@ -114,6 +118,8 @@ chmod +x upgrade_script.sh
 
 ./upgrade_script.sh cassandra cassandra 10.21.3.48 9042
 
+
+# we need to think about the cqlsh how to excute it on the first caasandra 
 # with ssl NTC the user name & password & hostname & port
 
 #./upgrade_script.sh cassandra cassandra 10.0.50.53 9142 --ssl

@@ -88,7 +88,7 @@ sleep 5
 
 echo "started the upgrade ...."
 
-cd /opt/apps/fabric/fabric/upgrade/toV6.5.8
+cd $K2_HOME/fabric/upgrade/toV6.5.8
 
 chmod +x upgrade_script.sh
 
@@ -119,7 +119,7 @@ sleep 5
 echo "Do you want to start the fabric service ? yes OR no "  
 read state
 
-if [ $state == "yes" ]
+if [ "$state" == "yes" ]
 then
   date
   k2fabric start
@@ -131,7 +131,7 @@ fi
 echo "Do you want to start the iidfinder service ? yes OR no "  
 read state
 
-if [ $state == "yes" ]
+if [ "$state" == "yes" ]
 then
   date
   fabric/scripts/iid_finder.sh watchdog
