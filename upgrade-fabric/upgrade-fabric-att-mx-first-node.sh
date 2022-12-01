@@ -24,8 +24,9 @@ mv apps apps_bk
 #####################################################################
                 # vaildation for exisit folders #
 #####################################################################
-
-CONFIG=config_fabric-6.5.4_96-HF2
+# $(k2fabric -version |awk '{print $2}'|head -n1)
+# CONFIG=config_fabric-6.5.4_96-HF2
+CONFIG=config_$(k2fabric -version |awk '{print $2}'|head -n1)
 if [ -d "$CONFIG" ]; then
     echo "the folder $CONFIG ^^ exists ^^."
 else
@@ -33,7 +34,8 @@ else
     exit 1
 fi
 
-FABRIC=fabric-6.5.4_96-HF2
+# FABRIC=fabric-6.5.4_96-HF2
+FABRIC=$(k2fabric -version |awk '{print $2}'|head -n1)
 if [ -d "$FABRIC" ]; then
     echo "the folder $FABRIC ^^ exists ^^."
 else

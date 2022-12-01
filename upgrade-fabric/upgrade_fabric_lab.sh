@@ -1,5 +1,7 @@
 #!/bin/bash
 
+K2_HOME=/opt/apps/fabric
+
 ## Stop fabric & iidfinder servers
 
 echo "stop fabric & iid-finder"
@@ -14,17 +16,19 @@ sleep 5
 
 echo "started to backup config & fabric & apps ...."
 
-cp -r config config_$(k2fabric -version |awk '{print $2}'|head -n1)
+cp -r "config" "config_fabric_bk"
 
-mv fabric $(k2fabric -version |awk '{print $2}'|head -n1)
+mv "fabric" "fabric_bk"
 
-mv apps apps_bk
+mv "apps" "apps_bk"
 
 #####################################################################
                 # vaildation for exisit folders #
 #####################################################################
 
-CONFIG=config_fabric-6.5.4_96-HF2
+# CONFIG=config_fabric-6.5.4_96-HF2
+CONFIG="config_fabric_bk"
+
 if [ -d "$CONFIG" ]; then
     echo "the folder $CONFIG ^^ exists ^^."
 else
@@ -32,7 +36,8 @@ else
     exit 1
 fi
 
-FABRIC=fabric-6.5.4_96-HF2
+# FABRIC=fabric-6.5.4_96-HF2
+FABRIC="fabric_bk"
 if [ -d "$FABRIC" ]; then
     echo "the folder $FABRIC ^^ exists ^^."
 else
@@ -88,7 +93,7 @@ sleep 5
 
 echo "started the upgrade ...."
 
-cd $K2_HOME/fabric/upgrade/toV6.5.8
+cd $K2_HOME/fabric/upgrade/toV6.5.8 || exit
 
 chmod +x upgrade_script.sh
 
@@ -117,9 +122,9 @@ sleep 5
 ## optional :
 
 echo "Do you want to start the fabric service ? yes OR no "  
-read state
+read -r state
 
-if [ "$state" == "yes" ]
+if [ "$state" == "yes" ] || [ "$state" == "y" ]
 then
   date
   k2fabric start
@@ -129,9 +134,9 @@ exit
 fi
 
 echo "Do you want to start the iidfinder service ? yes OR no "  
-read state
+read -r statei
 
-if [ "$state" == "yes" ]
+if [ "$statei" == "yes" ] || [ "$statei" == "y" ]
 then
   date
   fabric/scripts/iid_finder.sh watchdog
