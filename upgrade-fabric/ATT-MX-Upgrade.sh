@@ -20,8 +20,6 @@ common_preffix="$K2_HOME"storage/common/
 cp "$common_preffix"common.db "$common_preffix"acc_search.db
 cp "$common_preffix"common.db "$common_preffix"sub_search.db
 
-# cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/acc_search.db
-# cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/sub_search.db
 
 ## Backup the config & fabric & apps
 
@@ -64,11 +62,11 @@ fi
 
 ## Download the fabric backage 
 
-# echo "started to downloding the fabric package ...."
+echo "started to downloding the fabric package ...."
 
 # We have new package 6.5.9-HF4 :
 
-# wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8bLIT/download 
+wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8bLIT/download 
 
 # package 6.5.9-HF3
 # wget --no-check-certificate https://download.k2view.com/index.php/s/69viXSMGwZtUbrB/download 
@@ -107,10 +105,7 @@ k2fabric -version
 
 sleep 3 
 
-
 ## Run the upgrade script ##
-# $K2_HOME = opt/k2view
-
 
 echo "started the upgrade ...."
 
