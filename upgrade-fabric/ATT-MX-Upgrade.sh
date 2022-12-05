@@ -15,8 +15,13 @@ echo "started to backup the common DB ...."
 
 # copy the common DB: we need to save them in the same directory "$K2_HOME/storage/common"
 
-cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/acc_search.db
-cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/sub_search.db
+common_preffix="$K2_HOME"storage/common/
+
+cp "$common_preffix"common.db "$common_preffix"acc_search.db
+cp "$common_preffix"common.db "$common_preffix"sub_search.db
+
+# cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/acc_search.db
+# cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/sub_search.db
 
 ## Backup the config & fabric & apps
 
