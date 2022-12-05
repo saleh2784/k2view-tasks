@@ -11,12 +11,12 @@ k2fabric stop
 
 sleep 5
 
-# copy the common DB :
-# /opt/k2view/storage/common
-# we need to save them in the sam directory 
+echo "started to backup the common DB ...."
 
-# cp common.db acc_search.db
-# cp common.db sub_search.db
+# copy the common DB: we need to save them in the same directory "$K2_HOME/storage/common"
+
+cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/acc_search.db
+cp "$K2_HOME"/storage/common/common.db "$K2_HOME"/storage/common/sub_search.db
 
 ## Backup the config & fabric & apps
 
@@ -24,7 +24,7 @@ backup_suffix=$(k2fabric -version |awk '{print $2}'|head -n1)
 
 echo "started to backup config & fabric & apps ...."
 
-cp -r "config" "config$backup_suffix"
+cp -r "config" "config_$backup_suffix"
 
 mv "fabric" "$backup_suffix"
 
@@ -61,10 +61,11 @@ fi
 
 # echo "started to downloding the fabric package ...."
 
-# We have new package :
-# HF-4
+# We have new package 6.5.9-HF4 :
+
 # wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8bLIT/download 
-# HF-3
+
+# package 6.5.9-HF3
 # wget --no-check-certificate https://download.k2view.com/index.php/s/69viXSMGwZtUbrB/download 
 
 
@@ -102,10 +103,9 @@ k2fabric -version
 sleep 3 
 
 
-## Run the upgrade script
-
+## Run the upgrade script ##
 # $K2_HOME = opt/k2view
-# /opt/k2view/fabric/upgrade/toV6.5.8
+
 
 echo "started the upgrade ...."
 
@@ -122,23 +122,26 @@ chmod +x iif_config_ini_IID_TOKEN_BINDER.sh
            # Need vaildation before we start the fabric 
            # 1. if the script run correctly 
            # 2. added the "security_profiles set<text>" in TABLE k2auth.roles
+           # 3.IID_TOKEN_BINDER was set
 ##############################################################################
 
 
 sleep 5
-
-## Start the fabric & iidfinder
+echo "starting the fabric ..................."
+##Start the fabric :
 
 k2fabric start
 
 # sleep 3
 
-# fabric/scripts/iid_finder.sh watchdog
+##Start the iidfinder :
 
+# echo "starting the iid_finder ..................."
+# fabric/scripts/iid_finder.sh watchdog
 
 ## Run this command below in cqlsh : (cassandra node) NTC the table :
 
-# echo "DESC k2auth.roles ;" |cqlsh -u cassandra -p cassandra --ssl
+## echo "DESC k2auth.roles ;" |cqlsh -u cassandra -p cassandra --ssl
 
 
 
