@@ -8,8 +8,8 @@ sed -i "s@tombstone_warn_threshold:.*@tombstone_warn_threshold: 100000@" /opt/ca
 sed -i "s@tombstone_failure_threshold:.*@tombstone_failure_threshold: 500000@" /opt/cassandra/cassandra/conf/cassandra.yaml
 
 ## check with cat ##
-cat /opt/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_warn
-cat /opt/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_failure
+cat "/opt/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_warn"
+cat "/opt/cassandra/cassandra/conf/cassandra.yaml | grep tombstone_failure"
 
 ## Validate the new values ##
 new_val1="tombstone_warn_threshold: 100000"
@@ -43,7 +43,8 @@ echo "check the service for cassandra: "
 
 service=cassandra
 
-if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 2 ))
+#if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 2 ))
+if (( $("ps -ef | grep -v grep | grep $service | wc -l") > 2 ))
 then
   echo "$service is still running!!!"
   exit 1
@@ -59,7 +60,8 @@ cassandra
 
 sleep 20
 
-if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 2 ))
+# if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 2 ))
+if (( $("ps -ef | grep -v grep | grep $service | wc -l") > 2 ))
 then
   echo "$service is running !!! "
   exit 1

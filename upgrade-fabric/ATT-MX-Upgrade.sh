@@ -1,12 +1,13 @@
 #!/bin/bash
 
-## Stop fabric & iidfinder servers
+## Stop fabric & iidfinder servers 
+## first we need to stop the iidfider and fabric on all nodes 
 
 echo "stop fabric & iid-finder"
 
-k2fabric stop
+fabric/scripts/iid_finder_stop.sh
 
-# fabric/scripts/iid_finder_stop.sh
+k2fabric stop
 
 sleep 5
 
@@ -14,17 +15,17 @@ sleep 5
 
 echo "started to backup config & fabric & apps ...."
 
-cp -r config config_$(k2fabric -version |awk '{print $2}'|head -n1)
+cp -r "config" "config_$(k2fabric -version |awk '{print $2}'|head -n1)"
 
-mv fabric $(k2fabric -version |awk '{print $2}'|head -n1)
+mv "fabric" "$(k2fabric -version |awk '{print $2}'|head -n1)"
 
-mv apps apps_bk
+mv "apps" "apps_$(k2fabric -version |awk '{print $2}'|head -n1)"
 
 #####################################################################
                 # vaildation for exisit folders #
 #####################################################################
 
-CONFIG=config_fabric-6.5.4_96-HF2
+CONFIG=config_fabric-6.5.2_74-HF1
 if [ -d "$CONFIG" ]; then
     echo "the folder $CONFIG ^^ exists ^^."
 else
@@ -32,14 +33,14 @@ else
     exit 1
 fi
 
-FABRIC=fabric-6.5.4_96-HF2
+FABRIC=fabric-6.5.2_74-HF1
 if [ -d "$FABRIC" ]; then
     echo "the folder $FABRIC ^^ exists ^^."
 else
     echo "ERROR: the folder $FABRIC does not exist."
     exit 1
 fi
-APPS=apps_bk
+APPS=apps_fabric-6.5.2_74-HF1
 if [ -d "$APPS" ]; then
     echo "the folder $APPS ^^ exists ^^."
 else
@@ -51,13 +52,20 @@ fi
 
 echo "started to downloding the fabric package ...."
 
-
-wget --no-check-certificate https://download.k2view.com/index.php/s/MqEoMNu9QuVnHeW/download 
+# We have new package :
+# HF-4
+# wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8bLIT/download 
+# HF-3
+# wget --no-check-certificate https://download.k2view.com/index.php/s/69viXSMGwZtUbrB/download 
 
 
 ## Untar the backage  "fabric & apps directoryes"
 
 tar -zxvf download fabric apps
+
+#NTC the export 
+
+export FABRIC_HOME=$K2_HOME
 
 echo "#############################################################"
 echo " check the fabric & apps folders if are exists "
@@ -82,25 +90,21 @@ echo "#####################################"
 echo "the new version is :"
 k2fabric -version
 
-sleep 5 
+sleep 3 
 
-## Run the upgrade script "just in the first node"
+
+## Run the upgrade script
 
 echo "started the upgrade ...."
-# K2_HOME
-cd /opt/apps/fabric/fabric/upgrade/toV6.5.8
 
-chmod +x upgrade_script.sh
+export FABRIC_HOME=$K2_HOME/fabric
 
-# without ssl NTC the user name & password & hostname & port
+cd "$K2_HOME/fabric/upgrade/toV6.5.8" || exit
 
-./upgrade_script.sh
+chmod +x iif_config_ini_IID_TOKEN_BINDER.sh
 
-# ./upgrade_script.sh cassandra cassandra 10.21.3.48 9042
+./iif_config_ini_IID_TOKEN_BINDER.sh "$FABRIC_HOME"/config/iifConfig.ini
 
-# with ssl NTC the user name & password & hostname & port
-
-#./upgrade_script.sh cassandra cassandra 10.0.50.53 9142 --ssl
 
 ##############################################################################
            # Need vaildation before we start the fabric 
@@ -113,42 +117,16 @@ sleep 5
 
 ## Start the fabric & iidfinder
 
-# k2fabric start
+k2fabric start
+
+# sleep 3
+
 # fabric/scripts/iid_finder.sh watchdog
 
-## optional :
 
-echo "Do you want to start the fabric service ? yes OR no "  
-read state
+## Run this command below in cqlsh : (cassandra node) NTC the table :
 
-if [ $state == "yes" ]
-then
-  date
-  k2fabric start
-else
-  echo "You can run the fabric service later :) "
-exit
-fi
-
-echo "Do you want to start the iidfinder service ? yes OR no "  
-read state
-
-if [ $state == "yes" ]
-then
-  date
-  fabric/scripts/iid_finder.sh watchdog
-else
-  echo "You can run the iidfinder  service later :) "
-exit
-fi
-
-
-
-## Run this command below in cqlsh : (cassandra node) NTV the table :
-# without ssl
-# cat DESC k2auth.roles ; |cqlsh -u cassandra -p cassandra
-# with ssl
-# cat DESC k2auth.roles ; |cqlsh -u cassandra -p cassandra --ssl
+# echo "DESC k2auth.roles ;" |cqlsh -u cassandra -p cassandra --ssl
 
 
 

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-K2_HOME=/opt/apps/fabric
-
 ## Stop fabric & iidfinder servers
 
 echo "stop fabric & iid-finder"
@@ -57,7 +55,7 @@ fi
 echo "started to downloding the fabric package ...."
 
 
-wget --no-check-certificate https://download.k2view.com/index.php/s/MqEoMNu9QuVnHeW/download 
+#wget --no-check-certificate https://download.k2view.com/index.php/s/MqEoMNu9QuVnHeW/download 
 
 
 ## Untar the backage  "fabric & apps directoryes"
@@ -87,19 +85,27 @@ echo "#####################################"
 echo "the new version is :"
 k2fabric -version
 
-sleep 5 
+sleep 3 
 
 ## Run the upgrade script "just in the first node"
 
 echo "started the upgrade ...."
 
-cd $K2_HOME/fabric/upgrade/toV6.5.8 || exit
+export FABRIC_HOME=$K2_HOME
 
-chmod +x upgrade_script.sh
+
+cd "$K2_HOME"/fabric/upgrade/toV6.5.8 || exit
+
+
+chmod +x iif_config_ini_IID_TOKEN_BINDER.sh
+
+
+./iif_config_ini_IID_TOKEN_BINDER.sh "$FABRIC_HOME"/config/iifConfig.ini
+
 
 # without ssl NTC the user name & password & hostname & port
 
-./upgrade_script.sh cassandra cassandra 10.21.3.48 9042
+# ./upgrade_script.sh cassandra cassandra 10.21.3.48 9042
 
 # with ssl NTC the user name & password & hostname & port
 
@@ -116,34 +122,35 @@ sleep 5
 
 ## Start the fabric & iidfinder
 
-# k2fabric start
+k2fabric start
+
 # fabric/scripts/iid_finder.sh watchdog
 
 ## optional :
 
-echo "Do you want to start the fabric service ? yes OR no "  
-read -r state
+# echo "Do you want to start the fabric service ? yes OR no "  
+# read -r state
 
-if [ "$state" == "yes" ] || [ "$state" == "y" ]
-then
-  date
-  k2fabric start
-else
-  echo "You can run the fabric service later :) "
-exit
-fi
+# if [ "$state" == "yes" ] || [ "$state" == "y" ]
+# then
+#   date
+#   k2fabric start
+# else
+#   echo "You can run the fabric service later :) "
+# exit
+# fi
 
-echo "Do you want to start the iidfinder service ? yes OR no "  
-read -r statei
+# echo "Do you want to start the iidfinder service ? yes OR no "  
+# read -r statei
 
-if [ "$statei" == "yes" ] || [ "$statei" == "y" ]
-then
-  date
-  fabric/scripts/iid_finder.sh watchdog
-else
-  echo "You can run the iidfinder  service later :) "
-exit
-fi
+# if [ "$statei" == "yes" ] || [ "$statei" == "y" ]
+# then
+#   date
+#   fabric/scripts/iid_finder.sh watchdog
+# else
+#   echo "You can run the iidfinder  service later :) "
+# exit
+# fi
 
 
 
