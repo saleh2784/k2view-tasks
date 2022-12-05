@@ -5,21 +5,30 @@
 
 echo "stop fabric & iid-finder"
 
-fabric/scripts/iid_finder_stop.sh
+#fabric/scripts/iid_finder_stop.sh
 
 k2fabric stop
 
 sleep 5
 
+# copy the common DB :
+# /opt/k2view/storage/common
+# we need to save them in the sam directory 
+
+# cp common.db acc_search.db
+# cp common.db sub_search.db
+
 ## Backup the config & fabric & apps
+
+backup_suffix=$(k2fabric -version |awk '{print $2}'|head -n1)
 
 echo "started to backup config & fabric & apps ...."
 
-cp -r "config" "config_$(k2fabric -version |awk '{print $2}'|head -n1)"
+cp -r "config" "config$backup_suffix"
 
-mv "fabric" "$(k2fabric -version |awk '{print $2}'|head -n1)"
+mv "fabric" "$backup_suffix"
 
-mv "apps" "apps_$(k2fabric -version |awk '{print $2}'|head -n1)"
+mv "apps" "apps_$backup_suffix"
 
 #####################################################################
                 # vaildation for exisit folders #
@@ -50,7 +59,7 @@ fi
 
 ## Download the fabric backage 
 
-echo "started to downloding the fabric package ...."
+# echo "started to downloding the fabric package ...."
 
 # We have new package :
 # HF-4
@@ -95,9 +104,12 @@ sleep 3
 
 ## Run the upgrade script
 
+# $K2_HOME = opt/k2view
+# /opt/k2view/fabric/upgrade/toV6.5.8
+
 echo "started the upgrade ...."
 
-export FABRIC_HOME=$K2_HOME/fabric
+export FABRIC_HOME=$K2_HOME
 
 cd "$K2_HOME/fabric/upgrade/toV6.5.8" || exit
 
