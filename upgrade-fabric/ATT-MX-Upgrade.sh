@@ -1,11 +1,12 @@
 #!/bin/bash
 
-## Stop fabric & iidfinder servers 
 ## first we need to stop the iidfider and fabric on all nodes 
+
+## Stop fabric & iidfinder servers 
 
 echo "stop fabric & iid-finder"
 
-#fabric/scripts/iid_finder_stop.sh
+fabric/scripts/iid_finder_stop.sh
 
 k2fabric stop
 
@@ -13,7 +14,7 @@ sleep 5
 
 echo "started to backup the common DB ...."
 
-# copy the common DB: we need to save them in the same directory "$K2_HOME/storage/common"
+# copy the common DB on all servers : we need to save them in the same directory "$K2_HOME/storage/common"
 
 common_preffix="$K2_HOME"storage/common/
 
@@ -64,7 +65,7 @@ fi
 
 echo "started to downloding the fabric package ...."
 
-# We have new package 6.5.9-HF4 :
+# new package 6.5.9-HF4 :
 
 wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8bLIT/download 
 
@@ -72,7 +73,7 @@ wget --no-check-certificate https://download.k2view.com/index.php/s/rvc1vNoO0M8b
 # wget --no-check-certificate https://download.k2view.com/index.php/s/69viXSMGwZtUbrB/download 
 
 
-## Untar the backage  "fabric & apps directoryes"
+## Untar the backage  "fabric & apps directories"
 
 tar -zxvf download fabric apps
 
