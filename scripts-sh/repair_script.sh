@@ -2,7 +2,7 @@
 
 # How to run the script:
 
-if [ "$2" == "" ] && [ "$2" == "" ];
+if [ "$1" == "" ] && [ "$2" == "" ];
 then
     echo "README"
     echo ""
