@@ -1,8 +1,6 @@
 #!/bin/bash
 /opt/cassandra/cassandra/conf/cassandra.yaml
 
-
-
 ## change the tombstone values 
 sed -i "s@tombstone_warn_threshold:.*@tombstone_warn_threshold: 100000@" /opt/cassandra/cassandra/conf/cassandra.yaml
 sed -i "s@tombstone_failure_threshold:.*@tombstone_failure_threshold: 500000@" /opt/cassandra/cassandra/conf/cassandra.yaml
