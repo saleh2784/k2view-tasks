@@ -20,10 +20,14 @@ LOGFILE="$HOME"/cassandra/logs/repair/"$DATE_N""-"
 ## Function: Print a help message.
 usage() {
   echo "Usage: $0 [-k Keyspace(Mandatory)] [-s skip (Option)] [-h help(Option)]" 1>&2
-  echo "Usage: $0 [-h]" 1>&2
+  echo "if you want to run the repair on all kesapese you will use $0 -k all "
   echo "Usage: $0 [-k all] " 1>&2
-  echo "Usage: $0 [-k kespace-name]" 1>&2
-  echo "Usage: $0 [-k all] [-s kespace-name(Option)-not working]" 1>&2
+  echo "if you want to run the repair on specific kesapese or more you will use $0 -k name-kespase -k name-kespace -k name-kespace " 1>&2
+  echo "Usage: $0 [-k kespace-name (spicific kespace or more)]" 1>&2
+  echo "if you want to run repair on all kesapese without one kespaces or more you will use $0 -s name-kespase "
+  echo "Usage: $0 [-s kespace-name] ( all keyspaces without this kespace - just 1 kespace )" 1>&2
+  echo "Usage: $0 <<< the logs repair path is under : <<< "$LOGS_PATH" >>> "
+  echo "Usage: $0 [-h] for help" 1>&2
   echo ""
   echo "****************************************"
   echo "list of the kespaces in the current node :"
@@ -58,58 +62,72 @@ echo "$kespace" >"$LOGS_PATH"kespace.txt
 # cat $kfile | while read line
 
 # getopts arguments k,s,h
-while getopts "k:sh" opt; do
+while getopts "k:s:h" opt; do
 case $opt in
-k)
-if [ "$OPTARG" == "all" ]
-then
+k) ke=$OPTARG
+if [ "$ke" == "all" ]
+then 
   echo "*********************************************************************"
   echo "           repair are running in $OPTARG kespaces                  "
   echo "*********************************************************************"
+  #for line in $(cat $kfile)
   while IFS= read -r line
   do
     for i in $line
-    do
+      do
         echo ""
         echo "****************************************"
-        echo "$(date) <<<< Repair started for: $line ....... >>>> "
-        $NODETOOL repair "$line" -j 4 -pr -local -seq >>"$LOGFILE""$line".log
-        echo "$(date) ** Repair is done in keyspace ** (( $line )) **"
+        echo "repair start >>>>>>>>>."
+        echo "$(date) <<<< Repair started for: $i >>>> "
+        $NODETOOL repair "$i" -j 4 -pr -local -seq >>"$LOGFILE""$i".log
+        echo "$(date) ** Repair is done in keyspace ** (( $i )) **"
         echo "****************************************"
         echo ""
-    done
+      done
 done < "$kfile"
 
 echo "^^^^^^^^^^ <<< the logs path is under : $LOGS_PATH >>> ^^^^^^^^^^ "
-## -k xxx -k yyy -k zzz
-elif [ "$OPTARG" = "$OPTARG" ]
+
+##########################################################################################################
+
+elif [ "$ke" = "$ke" ]
 then
-    if grep -Fxq "$OPTARG" "$kfile"
+    if grep -Fxq "$ke" "$kfile"
     then
+
         echo " <<<<<starting repair >>>>> "
         echo ""
     else
-        echo "the kespace $OPTARG is not found in the cassandra !!!! "
+        echo "the kespace $ke is not found in the cassandra !!!! "
         exit
     fi
-        echo ""
         echo "***********************************************************************************"
-        echo "............repair are running in kespace: $OPTARG............"
+        echo "............ repair are running in kespace: $ke ............"
         echo "***********************************************************************************"
         echo ""
-        echo "*********************"
-        echo "$(date) <<<< Repair started in keyspace $OPTARG ....... >>>> "
-        $NODETOOL repair "$OPTARG" -j 4 -pr -local -seq >>"$LOGFILE""$OPTARG".log
-        echo "$(date) ** Repair is done in keyspace ** (( $OPTARG )) **"
-        echo "*********************"
+        # echo "*********************"
+        echo "$(date) <<<< Repair started in keyspace $ke ....... >>>> "
+        $NODETOOL repair "$ke" -j 4 -pr -local -seq >>"$LOGFILE""$ke".log
+        echo "$(date) ** Repair is done in keyspace ** (( $ke )) **"
+        # echo "*********************"
         echo ""
-        echo "^^^^^^^^^^ <<< the logs path is under : $LOGS_PATH >>> ^^^^^^^^^^ "
 else
    usage   
 fi
+##########################################################################################################
 ;;
-s) # skip kespace 
+s)skip=$OPTARG 
 echo "skip"
+for w in $(cat $kfile)
+do
+    if [ "$skip" == "$w" ]
+    then
+      continue
+    fi
+    echo "$(date) <<<< Repair started in keyspace ""$w"" ....... >>>> "
+    $NODETOOL repair "$w" -j 4 -pr -local -seq >>"$LOGFILE""$w".log
+    echo "$(date) ** Repair is done in keyspace ** (( ""$w"" )) **"
+done
 ;;
 h) # help
 echo "help"
@@ -122,3 +140,5 @@ usage
 ;;
 esac
 done
+
+

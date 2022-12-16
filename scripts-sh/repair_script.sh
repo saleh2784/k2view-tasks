@@ -43,7 +43,7 @@ node2=10.21.3.49
 node3=10.21.3.50
 
 #Array with nodes :
-ALLNODES=("$node1" "$node2" "$node3" )
+ALLNODES=("$node1" "$node2" "$node3")
 START_FROM_NODE2=("$node2" "$node3") 
 START_FROM_NODE3=("$node3")
 
@@ -80,19 +80,19 @@ else
 fi
 
 #check argument: keyspace to start repair from
-if [ $2 = "ALLKEYSPACES" ]; then
+if [ "$2" = "ALLKEYSPACES" ]; then
     CURRENT_KEYSPACE_ARR=("${ALLKEYSPACES[@]}")
-elif [ $2 = "START_FROM_system_auth" ]; then
+elif [ "$2" = "START_FROM_system_auth" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_system_auth[@]}")
-elif [ $2 = "START_FROM_system_distributed" ]; then
+elif [ "$2" = "START_FROM_system_distributed" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_system_distributed[@]}")
-elif [ $2 = "START_FROM_k2batchprocess" ]; then
+elif [ "$2" = "START_FROM_k2batchprocess" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_k2batchprocess[@]}")
-elif [ $2 = "START_FROM_k2auth" ]; then
+elif [ "$2" = "START_FROM_k2auth" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_k2auth[@]}")
-elif [ $2 = "START_FROM_k2audit" ]; then
+elif [ "$2" = "START_FROM_k2audit" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_k2audit[@]}")
-elif [ $2 = "START_FROM_k2_commons" ]; then
+elif [ "$2" = "START_FROM_k2_commons" ]; then
     CURRENT_KEYSPACE_ARR=("${START_FROM_k2_commons[@]}")
 else
     exit 1
