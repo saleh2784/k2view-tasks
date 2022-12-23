@@ -34,7 +34,9 @@ echo "net.ipv4.tcp_keepalive_probes = 3" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_keepalive_intvl = 10" >> /etc/sysctl.conf
 
 sysctl -p
-
+######################################################################################
+                                    ## cassandra ##
+######################################################################################
 echo "swith user to cassandra"
 
 sudo su - cassandra &
