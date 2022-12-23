@@ -1,5 +1,8 @@
 #!/bin/bash
 
+######################################################################################
+                                    ## users ##
+######################################################################################
 echo "creating the users >>>>>>>>>>>>>>>"
 mkdir -p /opt/apps
 chmod 755 /opt/apps
@@ -75,25 +78,21 @@ echo ""
 echo "<<<<<<<<<<< start cassandra service >>>>>>>>>>>>"
 
 su - cassandra -c "cassandra > /dev/null "
-# cassandra #> /dev/null 
 
 sleep 40
-
+# wait 40 sec until cassandra is up then create the user k2admin 
 
 echo ""
 echo "creating user k2admin >>>>>>>>>>>>"
 echo ""
 echo "create user k2admin with password 'Q1w2e3r4t5' superuser;" |cqlsh -u cassandra -p cassandra
 
-# #Check cassandra's status 
+##Check cassandra status 
 
 echo ""
 echo " check the status node >>>>>>>>>>>>"
 
 nodetool -u cassandra -pw cassandra status
-
-# rm -rf apache-cassandra-3.11.9 apps cassandra hardening init.sh logs monitor storage .cassandra/
-
 
 ######################################################################################
                                     ## kafka ##
@@ -165,8 +164,6 @@ sed -i "s@K2_HOME=.*@K2_HOME=$(pwd)@" .bash_profile
 
 bash -l date && echo "run seeds >>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
-
-
 K2_HOME=/opt/apps/fabric
 
 echo "<<<<<<<< run seeds >>>>>>>>>>"
@@ -185,10 +182,7 @@ sed -i 's@#REPLICATION_OPTIONS=.*@REPLICATION_OPTIONS={ '"'"'class'"'"' : '"'"'N
 sed -i "s@#HOSTS=.*@HOSTS=$cserver1@" $K2_HOME/config/config.ini
 sed -i "s@#USER=.*@USER=k2admin@" $K2_HOME/config/config.ini
 
-
-######################################################################################
-
- # In case of using Kafka + iidFinder, run also the following commands:
+# In case of using Kafka + iidFinder, run also the following commands:
 
 sed -i "s@#PASSWORD=.*@PASSWORD=Q1w2e3r4t5@" $K2_HOME/config/config.ini
 sed -i "s@#MESSAGES_BROKER_TYPE=.*@MESSAGES_BROKER_TYPE=KAFKA@" $K2_HOME/config/config.ini
