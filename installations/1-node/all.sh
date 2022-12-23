@@ -34,9 +34,7 @@ echo "net.ipv4.tcp_keepalive_probes = 3" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_keepalive_intvl = 10" >> /etc/sysctl.conf
 
 sysctl -p
-######################################################################################
-                                    ## cassandra ##
-######################################################################################
+
 echo "swith user to cassandra"
 
 sudo su - cassandra &
@@ -110,7 +108,7 @@ cd /opt/apps/kafka/
 
 su - kafka -c "wget --no-check-certificate https://download.k2view.com/index.php/s/g9IZQIDKDwaULGo/download /opt/apps/kafka/"
 
-su - kafka -c "tar -zxvf download && bash -l date && date "
+su - kafka -c "tar -zxvf download "
 echo "run seds >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 K2_HOME=/opt/apps/kafka
@@ -160,15 +158,12 @@ cd /opt/apps/fabric/
 su - fabric -c "wget --no-check-certificate https://download.k2view.com/index.php/s/IqMl8VVsfg24aY8/download"
 
 su - fabric -c "tar -zxvf download "
-# && bash -l date &&"
 
 sed -i "s@K2_HOME=.*@K2_HOME=$(pwd)@" .bash_profile
 
-bash -l date && echo "run seeds >>>>>>>>>>>>>>>>>>>>>>>>>>>"
+echo "<<<<<<<< run seeds >>>>>>>>>>"
 
 K2_HOME=/opt/apps/fabric
-
-echo "<<<<<<<< run seeds >>>>>>>>>>"
 
 # Cassandra IP
 cserver1=$(hostname -I |awk {'print $1'})
