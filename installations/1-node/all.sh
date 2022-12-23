@@ -42,9 +42,9 @@ cd /opt/apps/cassandra
 
 echo "i'm connected to cassandra user " 
 
-wget --no-check-certificate https://download.k2view.com/index.php/s/n7H7bZs2HMKKZF7/download -O saleh /opt/apps/cassandra/
+wget --no-check-certificate https://download.k2view.com/index.php/s/n7H7bZs2HMKKZF7/download -O cassandra-3.11.9.tar.gz /opt/apps/cassandra/
 
-su - cassandra -c "tar -zxvf /opt/apps/cassandra/saleh"
+su - cassandra -c "tar -zxvf /opt/apps/cassandra/cassandra-3.11.9.tar.gz"
 
 
 sed -i '11i\alias python='/usr/bin/python2.7'\' ~/.bash_profile
@@ -106,9 +106,9 @@ cd /opt/apps/kafka/
 
 # tar -zxvf download && bash -l date && echo "run seeds" & echo "hi"  & ddg
 
-su - kafka -c "wget --no-check-certificate https://download.k2view.com/index.php/s/g9IZQIDKDwaULGo/download /opt/apps/kafka/"
+su - kafka -c "wget --no-check-certificate https://download.k2view.com/index.php/s/g9IZQIDKDwaULGo/download -O kafka-5.5.1.tar.gz  /opt/apps/kafka/"
 
-su - kafka -c "tar -zxvf download "
+su - kafka -c "tar -zxvf kafka-5.5.1.tar.gz "
 echo "run seds >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 
 K2_HOME=/opt/apps/kafka
@@ -155,9 +155,9 @@ logout
 sudo su - fabric &
 cd /opt/apps/fabric/
 
-su - fabric -c "wget --no-check-certificate https://download.k2view.com/index.php/s/IqMl8VVsfg24aY8/download"
+su - fabric -c "wget --no-check-certificate https://download.k2view.com/index.php/s/IqMl8VVsfg24aY8/download -O fabric-6.5.6_29-HF1.tar.gz"
 
-su - fabric -c "tar -zxvf download "
+su - fabric -c "tar -zxvf fabric-6.5.6_29-HF1.tar.gz "
 
 sed -i "s@K2_HOME=.*@K2_HOME=$(pwd)@" .bash_profile
 
