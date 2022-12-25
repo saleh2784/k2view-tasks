@@ -141,4 +141,21 @@ usage
 esac
 done
 
-
+# COUNT=1
+# declare -a array
+# echo "$kespace" >"$LOGS_PATH"kespace.txt
+# while read -r LINE
+# do
+# for i in $LINE
+# do
+# #echo "$i"
+# array+=("$i")
+# ((COUNT++))
+# done
+# done < kespace.txt
+# #echo ${array[*]}
+# SIZE_A=$((${#array[@]}))
+# for ((i = 0; i < $SIZE_A; i++ ));do
+# value=${array[$i]}
+# #echo "$value"
+# done
