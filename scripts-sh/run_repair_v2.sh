@@ -55,7 +55,7 @@ exit_abnormal() {
 run_nodetool() {
 
   echo "*********************************************************************"
-  echo "           Repair are running on ($ak keyspaces)                  "
+  echo "           Repair are running on ($ak keyspace)                  "
   echo "*********************************************************************"
   echo ""
   echo ">>>>>>> Repair Start <<<<<<<"
