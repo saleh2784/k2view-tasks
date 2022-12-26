@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLUSTER_NAME="cassandra"
-DC_NAME="DC1"
+DC_NAME="DC2"
 
 ######################################################################################
                                     ## users ##
@@ -50,7 +50,7 @@ INSLATT_DIR=/opt/apps/cassandra
 echo "run seeds >>>>>>>>>>>>>>>>>>>>>>>>>"
 sed -i "s@INSLATT_DIR=.*@INSLATT_DIR=$(pwd)@" .bash_profile
 rm -rf  cassandra/data && ln -s /opt/apps/cassandra/storage/  cassandra/data
-sed -i 's@dc=.*@dc=$DC_NAME@' $INSLATT_DIR/cassandra/conf/cassandra-rackdc.properties
+sed -i 's@dc=.*@dc='$DC_NAME'@' $INSLATT_DIR/cassandra/conf/cassandra-rackdc.properties
 sed -i 's@cluster_name: .*@cluster_name: '$CLUSTER_NAME'@' $INSLATT_DIR/cassandra/conf/cassandra.yaml
 sed -i s/seeds:.*/"seeds: $(hostname -I |awk {'print $1'})"/g $INSLATT_DIR/cassandra/conf/cassandra.yaml
 sed -i s/listen_address:.*/"listen_address: $(hostname -I |awk {'print $1'})"/g $INSLATT_DIR/cassandra/conf/cassandra.yaml

@@ -84,44 +84,37 @@ echo "$keyspace" >"$LOGS_PATH"keyspace.txt
 ## getopts arguments ##
 while getopts ":k:s:hl" opt; do
 case ${opt} in
-k)ke=$OPTARG
-## run all keyspaces ##
+k)ks=$OPTARG
 while IFS= read -r ak
   do
-    if [ "$ke" == "all" ]
+    if [ "$ks" == "all" ] ## run all keyspaces ##
     then
-      run_nodetool     
+      run_nodetool
+    elif [[ "$ks" == *"$ak"* ]] ## run specific keyspace ##
+    then
+      run_nodetool  
     fi
 done < "$kfile"
-## run specific keyspace ##
-while IFS= read -r ak
-  do
-      if [[ "$ke" == *"$ak"* ]]
-      then
-        run_nodetool
-      fi
-  done < "$kfile"
-  echo ""
-  echo "^^^^^^^^^^ <<< the logs path is under : $LOGS_PATH >>> ^^^^^^^^^^"
+
+echo "<<< the logs path is under : $LOGS_PATH >>>"
 ;;
-## skip specific keysapce ##
 s)skip=$OPTARG
 while IFS= read -r ak
 do
-    if [[ "$skip" == *"$ak"* ]]
+    if [[ "$skip" == *"$ak"* ]] ## skip specific keysapce ##
     then
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
         echo ""
         echo "skipping keyspace : ($ak)"
         echo ""
         echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-        echo ""
         continue 
     fi
         run_nodetool
 
 done < "$kfile"
-echo "^^^^^^^^^^ <<< the logs path is under : $LOGS_PATH >>> ^^^^^^^^^^"
+
+echo "<<< the logs path is under : $LOGS_PATH >>>"
 ;;
 ## list keysapces ##
 l )
