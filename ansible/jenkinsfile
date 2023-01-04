@@ -32,7 +32,8 @@ pipeline {
                 inventory: "/etc/ansible/hosts",
                 // inventory: "ansible/host.ini",
                 // forks: 1
-                credentialsId: 'ssh',
+                disableHostKeyChecking: true,
+                // credentialsId: 'ssh',
                 //colorized: true
           )
 			}
