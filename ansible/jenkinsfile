@@ -5,7 +5,7 @@ pipeline {
     agent any
     
     parameters {
-        choice (proc: 'proccess', choices: ['install', 'uninstall'],)
+        choice (name: 'proccess', choices: ['install', 'uninstall'],)
     }
 
     stages {
@@ -27,7 +27,7 @@ pipeline {
 			    ansiblePlaybook(
                 // installation:'ansible', 
                 // limit:'',
-                playbook: "ansible/vim_${params.proc}.yml",
+                playbook: "ansible/vim_${params.proccess}.yml",
                 // playbook: "ansible/vim_install.yml",
                 inventory: "ansible/host.ini",
                 // playbook: "/tmp/install-vim.yml",
