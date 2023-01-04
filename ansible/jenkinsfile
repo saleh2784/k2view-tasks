@@ -1,8 +1,6 @@
 pipeline {
     agent any
-    options {
-      ansiColor('xterm')
-    }
+    
     parameters {
         choice choices: [ 'install', 'uninstall'], name: 'proccess'
     }
@@ -30,7 +28,7 @@ pipeline {
                 inventory: "ansible/host.ini",
                 forks: 1,
                 //credentialsId: 'veeam_server_user',
-                colorized: true
+                //colorized: true
           )
 			}
 		}
