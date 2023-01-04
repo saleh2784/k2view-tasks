@@ -4,7 +4,7 @@
   tasks:
   - name: Copy file with owner and permissions
     copy:
-      src: ansible/single-node-full.sh
-      dest: /tmp/single-node-full.sh
+      src: /tmp/saleh.sh
+      dest: /tmp/saleh.sh
   
 
