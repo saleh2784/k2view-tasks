@@ -1,0 +1,41 @@
+pipeline {
+    options {
+      ansiColor('xterm')
+    }
+    agent any
+    
+    parameters {
+        // choice (name: 'vim', choices: ['install', 'uninstall', 'copy', 'run'],)
+        choice (name: 'vim', choices: ['install', 'uninstall'],)
+    }
+    stages {
+        stage('Clean') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Get SCM') {
+            steps {
+                git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
+            }
+        }
+        stage('proccess'){
+            steps{
+            ansiblePlaybook(
+                playbook: "ansible/vim_${params.proccess}.yml",
+                inventory: "ansible/host.ini",
+                become: 'yes',
+                extras: '-vvv',
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh',
+                colorized: true
+          )
+            }
+        }
+			
+		}
+
+
+  }
+
+
