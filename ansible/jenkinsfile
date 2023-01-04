@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     parameters {
-        choice choices: [ 'install', 'uninstall'], name: 'proccess'
+        choice choices: [ 'install', 'uninstall' ], name: 'proccess'
     }
 
     stages {
@@ -24,7 +24,7 @@ pipeline {
 
 			steps {
 			    ansiblePlaybook(
-                playbook: "ansible/vim-${params.name}.yml",
+                playbook: "ansible/vim_"${params.name}".yml",
                 inventory: "ansible/host.ini",
                 forks: 1,
                 //credentialsId: 'veeam_server_user',
