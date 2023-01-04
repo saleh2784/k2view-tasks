@@ -36,7 +36,7 @@ pipeline {
                 inventory: "ansible/host.ini",
                 become: 'yes',
                 extras: '-v',
-                forks: 1
+                forks: 1,
                 disableHostKeyChecking: true,
                 credentialsId: 'ssh',
                 colorized: true
