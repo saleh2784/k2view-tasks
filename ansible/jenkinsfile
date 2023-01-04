@@ -27,10 +27,10 @@ pipeline {
                 installation:'ansible',
                 limit:'',
                 //playbook: "ansible/vim_${params.name}.yml",
-                playbook: "ansible/vim_install.yml",
-                // playbook: "/home/k2view/install-vim.yml",
-                // inventory: "/etc/ansible/hosts",
-                inventory: "ansible/host.ini",
+                // playbook: "ansible/vim_install.yml",
+                playbook: "/home/k2view/install-vim.yml",
+                inventory: "/etc/ansible/hosts",
+                // inventory: "ansible/host.ini",
                 // forks: 1
                 //credentialsId: 'veeam_server_user',
                 //colorized: true
