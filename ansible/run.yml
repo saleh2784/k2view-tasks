@@ -1,0 +1,9 @@
+- hosts: Devops
+  become: yes
+  
+  tasks:
+  - name: run script
+    block:
+      - command: chmod +x /tmp/saleh2.sh
+      - command: /tmp/saleh2.sh
+    become: yes

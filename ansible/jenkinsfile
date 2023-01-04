@@ -79,6 +79,24 @@ pipeline {
           )
             }
         }
+        stage('run'){
+        when {
+          expression {
+            params.proccess == "run"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                playbook: "ansible/run.yml",
+                inventory: "ansible/host.ini",
+                become: 'yes',
+                extras: '-vvv',
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh',
+                colorized: true
+          )
+            }
+        }
 		// 	steps {
 		// 	    ansiblePlaybook(
         //         // installation:'ansible', 
