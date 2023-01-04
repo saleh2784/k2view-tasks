@@ -4,7 +4,7 @@
   tasks:
   - name: Copy file with owner and permissions
     copy:
-      src: /tmp/saleh.sh
-      dest: /tmp/saleh.sh
+      src: /tmp/saleh2.sh
+      dest: /tmp/
   
 
