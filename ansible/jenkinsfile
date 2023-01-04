@@ -27,8 +27,6 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                // installation:'ansible', 
-                // limit:'',
                 playbook: "ansible/vim_install.yml",
                 inventory: "ansible/host.ini",
                 become: 'yes',
@@ -48,8 +46,6 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                // installation:'ansible', 
-                // limit:'',
                 playbook: "ansible/vim_uninstall.yml",
                 inventory: "ansible/host.ini",
                 become: 'yes',
