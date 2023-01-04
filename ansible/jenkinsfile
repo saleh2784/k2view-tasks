@@ -5,7 +5,7 @@ pipeline {
     agent any
     
     parameters {
-        choice (name: 'proccess', choices: ['install', 'uninstall'],)
+        choice (name: 'proccess', choices: ['install', 'uninstall', 'copy', 'ping'],)
     }
 
     stages {
@@ -19,7 +19,7 @@ pipeline {
                 git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
             }
         }
-        stage('procees') {
+        stage('procees ') {
 
 			steps {
 			    ansiblePlaybook(
