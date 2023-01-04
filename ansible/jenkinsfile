@@ -4,9 +4,9 @@ pipeline {
     }
     agent any
     
-    // parameters {
-    //     choice (name: 'proccess', choices: ['install', 'uninstall'],)
-    // }
+    parameters {
+        choice (name: 'proccess', choices: ['install', 'uninstall'],)
+    }
 
     stages {
         stage('Print Build Number') {
@@ -16,21 +16,19 @@ pipeline {
                 }
             }
         }
-        
         stage('Get SCM') {
             steps {
                 git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
             }
         }
-        
         stage('procees to vim') {
 
 			steps {
 			    ansiblePlaybook(
-                // installation:'ansible',
+                // installation:'ansible', 
                 // limit:'',
-                //playbook: "ansible/vim_${params.name}.yml",
-                playbook: "ansible/vim_install.yml",
+                playbook: "ansible/vim_${params.name}.yml",
+                // playbook: "ansible/vim_install.yml",
                 inventory: "ansible/host.ini",
                 // playbook: "/tmp/install-vim.yml",
                 // inventory: "/etc/ansible/hosts",
