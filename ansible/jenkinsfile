@@ -19,7 +19,7 @@ pipeline {
                 git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
             }
         }
-        stage('procees'){
+        stage('install'){
         when {
           expression {
             params.proccess == "install"
@@ -30,6 +30,27 @@ pipeline {
                 // installation:'ansible', 
                 // limit:'',
                 playbook: "ansible/vim_install.yml",
+                inventory: "ansible/host.ini",
+                become: 'yes',
+                extras: '-v',
+                forks: 1,
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh',
+                colorized: true
+          )
+            }
+        }
+        stage('uninstall'){
+        when {
+          expression {
+            params.proccess == "uninstall"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                // installation:'ansible', 
+                // limit:'',
+                playbook: "ansible/vim_uninstall.yml",
                 inventory: "ansible/host.ini",
                 become: 'yes',
                 extras: '-v',
