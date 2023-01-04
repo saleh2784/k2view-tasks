@@ -16,6 +16,11 @@ pipeline {
                 }
             }
         }
+        stage('Initialize') {
+            steps {
+                cleanWs()
+            }
+        }
         stage('Get SCM') {
             steps {
                 git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
