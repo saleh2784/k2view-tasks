@@ -26,7 +26,7 @@ pipeline {
 			    ansiblePlaybook(
                 playbook: "ansible/vim_${params.name}.yml",
                 inventory: "ansible/host.ini",
-                forks: 1,
+                forks: 1
                 //credentialsId: 'veeam_server_user',
                 //colorized: true
           )
