@@ -34,7 +34,7 @@ pipeline {
                 // forks: 1
                 disableHostKeyChecking: true,
                 // credentialsId: 'ssh',
-                //colorized: true
+                colorized: true
           )
 			}
 		}
