@@ -25,10 +25,10 @@ pipeline {
 			steps {
 			    ansiblePlaybook(
                 installation:'ansible',
-                limit:'',
+                // limit:'',
                 //playbook: "ansible/vim_${params.name}.yml",
-                // playbook: "ansible/vim_install.yml",
-                playbook: "/home/k2view/install-vim.yml",
+                playbook: "ansible/vim_install.yml",
+                // playbook: "/home/k2view/install-vim.yml",
                 inventory: "/etc/ansible/hosts",
                 // inventory: "ansible/host.ini",
                 // forks: 1
