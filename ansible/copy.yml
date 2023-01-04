@@ -2,10 +2,9 @@
   become: yes
 
   tasks:
-  - name: copy file
+  - name: Copy file with owner and permissions
     copy:
       src: ansible/single-node-full.sh
-      dest: /tmp/
-      become: yes
-
+      dest: /tmp/single-node-full.sh
+  
 
