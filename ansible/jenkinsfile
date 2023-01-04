@@ -5,7 +5,7 @@ pipeline {
     agent any
     
     parameters {
-        choice (name: 'proccess', choices: ['install', 'uninstall', 'copy', 'ping'],)
+        choice (name: 'proccess', choices: ['install', 'uninstall', 'copy', 'run'],)
     }
 
     stages {
@@ -41,6 +41,48 @@ pipeline {
             }
         }
         stage('uninstall'){
+        when {
+          expression {
+            params.proccess == "uninstall"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                // installation:'ansible', 
+                // limit:'',
+                playbook: "ansible/vim_uninstall.yml",
+                inventory: "ansible/host.ini",
+                become: 'yes',
+                extras: '-v',
+                forks: 1,
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh',
+                colorized: true
+          )
+            }
+        }
+        stage('copy'){
+        when {
+          expression {
+            params.proccess == "copy"
+          }
+        }
+            steps{
+            ansiblePlaybook(
+                // installation:'ansible', 
+                // limit:'',
+                playbook: "ansible/copy.yml",
+                inventory: "ansible/host.ini",
+                become: 'yes',
+                extras: '-v',
+                forks: 1,
+                disableHostKeyChecking: true,
+                credentialsId: 'ssh',
+                colorized: true
+          )
+            }
+        }
+        stage('run'){
         when {
           expression {
             params.proccess == "uninstall"

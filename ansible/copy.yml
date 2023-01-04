@@ -1,0 +1,17 @@
+---
+- name: COPY FILE
+  hosts: Devops
+  # remote_user: fabric
+  become: yes
+
+  tasks:
+
+    - name: copy file
+      copy:
+        src: ansible/single-node-full.sh
+        dest: /tmp/
+        owner: root
+        group: root
+      become: yes
+
+
