@@ -35,7 +35,7 @@ pipeline {
                 // playbook: "/tmp/install-vim.yml",
                 // inventory: "/etc/ansible/hosts",
                 become: 'yes',
-                extras: '-vv',
+                extras: '-v',
                 // forks: 1
                 disableHostKeyChecking: true,
                 credentialsId: 'ssh',
