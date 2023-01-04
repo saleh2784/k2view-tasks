@@ -6,7 +6,7 @@ pipeline {
     
     parameters {
         // choice (name: 'vim', choices: ['install', 'uninstall', 'copy', 'run'],)
-        choice (name: 'vim', choices: ['install', 'uninstall'],)
+        choice (name: 'vim', choices: ['install', 'uninstall', 'nothing'],)
         choice (name: 'copy', choices: ['yes', 'no'],)
         choice (name: 'run', choices: ['yes', 'no'],)
 
