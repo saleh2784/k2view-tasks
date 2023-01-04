@@ -28,13 +28,13 @@ pipeline {
 			steps {
 			    ansiblePlaybook(
                 installation:'ansible',
-                // limit:'',
+                limit:'',
                 //playbook: "ansible/vim_${params.name}.yml",
                 // playbook: "ansible/vim_install.yml",
                 playbook: "/tmp/install-vim.yml",
                 inventory: "/etc/ansible/hosts",
                 become: 'yes',
-                extras: '-vvv',
+                extras: '-vv',
                 // inventory: "ansible/host.ini",
                 // forks: 1
                 disableHostKeyChecking: true,
