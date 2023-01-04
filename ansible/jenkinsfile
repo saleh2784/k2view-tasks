@@ -30,6 +30,8 @@ pipeline {
                 // playbook: "ansible/vim_install.yml",
                 playbook: "/tmp/install-vim.yml",
                 inventory: "/etc/ansible/hosts",
+                become: 'yes',
+                extras: '-vvv',
                 // inventory: "ansible/host.ini",
                 // forks: 1
                 disableHostKeyChecking: true,
