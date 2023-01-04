@@ -74,7 +74,7 @@ pipeline {
                 playbook: "ansible/copy.yml",
                 inventory: "ansible/host.ini",
                 become: 'yes',
-                extras: '-v',
+                // extras: '-v',
                 forks: 1,
                 disableHostKeyChecking: true,
                 credentialsId: 'ssh',
