@@ -9,14 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('Print Build Number') {
-            steps {
-                script {
-                    echo "my Build number is : ${BUILD_NUMBER}"
-                }
-            }
-        }
-        stage('Initialize') {
+        stage('Clean') {
             steps {
                 cleanWs()
             }
@@ -26,7 +19,7 @@ pipeline {
                 git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
             }
         }
-        stage('procees to vim') {
+        stage('procees') {
 
 			steps {
 			    ansiblePlaybook(
