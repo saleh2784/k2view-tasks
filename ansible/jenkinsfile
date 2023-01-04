@@ -27,8 +27,8 @@ pipeline {
 
 			steps {
 			    ansiblePlaybook(
-                installation:'ansible',
-                limit:'',
+                // installation:'ansible',
+                // limit:'',
                 //playbook: "ansible/vim_${params.name}.yml",
                 playbook: "ansible/vim_install.yml",
                 inventory: "ansible/host.ini",
