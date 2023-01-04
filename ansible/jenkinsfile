@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    options {
+      ansiColor('xterm')
+    }
+    parameters {
+        choice choices: [ 'install', 'uninstall'], name: 'proccess'
+    }
+
+    stages {
+        stage('Print Build Number') {
+            steps {
+                script {
+                    echo "my Build number is : ${BUILD_NUMBER}"
+                }
+            }
+        }
+        
+        stage('Get SCM') {
+            steps {
+                git branch: "main", url: 'https://github.com/saleh2784/k2view-tasks.git'
+            }
+        }
+        
+        stage('procees to vim') {
+
+			steps {
+			    ansiblePlaybook(
+                playbook: "ansible/vim-${params.name}.yml",
+                inventory: "ansible/host.ini",
+                forks: 1,
+                #credentialsId: 'veeam_server_user',
+                colorized: true
+          )
+			}
+		}
+
+
+    }
+
+}
