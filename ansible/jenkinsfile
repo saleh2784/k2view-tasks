@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     parameters {
-        choice choices: [ 'install', 'uninstall' ], name: 'proccess'
+        choice (name: 'proccess', choices: ['install', 'uninstall'],)
     }
 
     stages {
