@@ -7,8 +7,8 @@ pipeline {
     parameters {
         // choice (name: 'vim', choices: ['install', 'uninstall', 'copy', 'run'],)
         choice (name: 'vim', choices: ['install', 'uninstall'],)
-        choice (name: 'copy', choices: ['copy'],)
-        choice (name: 'run', choices: ['run'],)
+        choice (name: 'copy', choices: ['yes', 'no'],)
+        choice (name: 'run', choices: ['yes', 'no'],)
 
 
     }
@@ -65,7 +65,7 @@ pipeline {
         stage('copy'){
         when {
           expression {
-            params.copy == "copy"
+            params.copy == "yes"
           }
         }
             steps{
@@ -83,7 +83,7 @@ pipeline {
         stage('run'){
         when {
           expression {
-            params.run == "run"
+            params.run == "no"
           }
         }
             steps{
