@@ -82,27 +82,27 @@ pipeline {
           )
             }
         }
-        stage('run'){
-        when {
-          expression {
-            params.proccess == "uninstall"
-          }
-        }
-            steps{
-            ansiblePlaybook(
-                // installation:'ansible', 
-                // limit:'',
-                playbook: "ansible/vim_uninstall.yml",
-                inventory: "ansible/host.ini",
-                become: 'yes',
-                extras: '-v',
-                forks: 1,
-                disableHostKeyChecking: true,
-                credentialsId: 'ssh',
-                colorized: true
-          )
-            }
-        }
+        // stage('run'){
+        // when {
+        //   expression {
+        //     params.proccess == "run"
+        //   }
+        // }
+        //     steps{
+        //     ansiblePlaybook(
+        //         // installation:'ansible', 
+        //         // limit:'',
+        //         playbook: "ansible/vim_uninstall.yml",
+        //         inventory: "ansible/host.ini",
+        //         become: 'yes',
+        //         extras: '-v',
+        //         forks: 1,
+        //         disableHostKeyChecking: true,
+        //         credentialsId: 'ssh',
+        //         colorized: true
+        //   )
+        //     }
+        // }
         // stage('procees ') {
 
 		// 	steps {
