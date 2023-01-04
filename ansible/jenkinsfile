@@ -5,7 +5,12 @@ pipeline {
     agent any
     
     parameters {
-        choice (name: 'proccess', choices: ['install', 'uninstall', 'copy', 'run'],)
+        // choice (name: 'vim', choices: ['install', 'uninstall', 'copy', 'run'],)
+        choice (name: 'vim', choices: ['install', 'uninstall'],)
+        choice (name: 'copy', choices: ['copy'],)
+        choice (name: 'run', choices: ['run'],)
+
+
     }
 
     stages {
@@ -22,7 +27,7 @@ pipeline {
         stage('install'){
         when {
           expression {
-            params.proccess == "install"
+            params.vim == "install"
           }
         }
             steps{
@@ -41,7 +46,7 @@ pipeline {
         stage('uninstall'){
         when {
           expression {
-            params.proccess == "uninstall"
+            params.vim == "uninstall"
           }
         }
             steps{
@@ -60,7 +65,7 @@ pipeline {
         stage('copy'){
         when {
           expression {
-            params.proccess == "copy"
+            params.copy == "copy"
           }
         }
             steps{
@@ -78,7 +83,7 @@ pipeline {
         stage('run'){
         when {
           expression {
-            params.proccess == "run"
+            params.run == "run"
           }
         }
             steps{
