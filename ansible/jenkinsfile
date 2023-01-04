@@ -33,13 +33,10 @@ pipeline {
                 // installation:'ansible', 
                 // limit:'',
                 playbook: "ansible/vim_${params.proccess}.yml",
-                // playbook: "ansible/vim_install.yml",
                 inventory: "ansible/host.ini",
-                // playbook: "/tmp/install-vim.yml",
-                // inventory: "/etc/ansible/hosts",
                 become: 'yes',
                 extras: '-v',
-                // forks: 1
+                forks: 1
                 disableHostKeyChecking: true,
                 credentialsId: 'ssh',
                 colorized: true
