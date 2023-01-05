@@ -13,4 +13,3 @@ sleep 10
 echo "kexec reloading ......."
 sudo kexec -u && sudo systemctl kexec
 sleep 120
-
