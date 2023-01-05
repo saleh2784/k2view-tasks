@@ -1,0 +1,260 @@
+https://www.scottyfullstack.com/blog/devops-button-click-environment-build-tutorial/
+
+AWS:
+Create an IAM role for this project (DevopsUser)
+create IAM police (EC2 full access) attach it to the user
+Create an EC2 Key pair to ssh to our instances
+EC2 Security Group
+
+
+# in the console session
+aws configure --profile DevopsUser
+access key id = paste here 
+secret key = paste here 
+
+
+#EC2 Security Group#
+port 22 allow from everywhere 
+
+# moving the downloaded pem file to my jenkins user ~/.ssh directory and chmoding it.
+# Then we will want to change ownership to make sure jenkins can use it.
+sudo mv ~/Downloads/key.pem /var/lib/jenkins/.ssh
+sudo chmod 400 /var/lib/jenkins/.ssh/key.pem
+sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/key.pem
+
+GitHub and Jenkins Setup:
+#for Jenkins to have access, we need to provide an ssh key.
+ssh-keygen
+cat ~/.ssh/jenkins_rsa.pub
+# Copy that output and jump over to github and navigate to your users settings
+# (click on your icon top right and select settings > SSH and GPG Keys)
+# Add a new ssh key and name it something like "Jenkins" and then paste the output you copied previously.
+#Save it and continue to Jenkins.
+
+JENKINS:
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+#Once you are in navigate to "Manage Jenkins" > "Manage Plugins". We need to add the following in "Available"
+
+#CloudBees AWS Credentials
+#Now navigate back to 'Manage Jenkins' > 'Manage Credentials' and drill down to global creds.
+
+#Click on Add Credential and select SSH Username with Private Key.
+cat ~/.ssh/jenkins_rsa
+
+#Paste that output into this field with your username.
+
+#Add another credential and this time select "AWS Credentials". 
+#Enter your Access Key and Secret key from your ~/.aws/credentials file and give the Id the IAM username for reference.
+
+# Finally, navigate back to manage jenkins > manage users and click on your user.
+# Now click configure on the left. Under API TOKEN add and generate a new token. 
+# save this and keep it SAFE. We will need it at the end.
+
+Terraform:
+inside your main project directory do:
+
+mkdir terraform
+mkdir terraform/rmq
+cd terraform/rmq
+touch main.tf variables.tf
+
+If you didn't notice from the dir structure, this is for our EC2 RabbitMQ instance.
+
+Open both of those files in your editor and add the following:
+(main.tf)
+
+provider "aws" {
+    region = "us-east-1"
+    profile = var.profile
+}
+
+resource "aws_instance" "rmq" {
+    ami = "ami-07ebfd5b3428b6f4d"
+    instance_type = "t2.micro"
+    key_name = "rabbitmq"
+    vpc_security_group_ids = ["sg-0e2e056a0c9e6abcc"]
+
+    tags = {
+        Name = var.name
+        group = var.group
+    }
+}
+
+#Pretty simple in this case. We have the provider and resource here. 
+#We also have the security group ID from the SG we created back in the preliminary setup. 
+#Note the key_name is the rabbitmq key we created in the last example. 
+#In addition, we want to update our variables.tf file as well with the name and profile vars.
+
+(variables.tf)
+
+variable "name" {
+    description = "name the instance on deploy"
+}
+
+
+variable "group" {
+    description = "The group name that ansible's dynamic inventory will groups"
+}
+
+
+variable "profile" {
+    description = "Which profile to use for IAM"
+}
+
+
+#Now, a very important piece here is to push this branch to your repo, as Jenkins will need it. so:
+
+git add .
+git commit -m "initial commit with Terraform additions"
+git push origin main
+
+Jenkins Job:
+
+Now that we have something in our repo, let's start on jenkins by opening http://localhost:8080
+
+Head to the dashboard and create a new job (freestyle project) and name it: RabbitMQ_Terraform_Build
+
+In the first segment, select the box "This project is parameterized" and add the following Params: Action (Choice), Ansible (Boolean), Name (String), Group (string):
+
+
+
+# In the Build Steps and add a Shell build step in the drop down. In this text box we will add our commands.
+
+#Don't get too hung up on what I did here. In fact, I hope you will make it your own and make it better.
+# I simply have an if elif else statement here. One for apply, plan, and destroy.
+# ( you will see in the next step why we have a separate one for apply. Note the -auto-approve on apply and destroy.
+# This is to get us through the terraform promt.
+
+if [ $Action = "apply" ]; then
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" -auto-approve terraform/rmq
+elif [ $Action = "plan" ]; then
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" terraform/rmq
+else
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" -auto-approve terraform/rmq
+fi
+
+Ansible with a Dynamic inventory:
+
+# If you have used ansible with the /etc/ansible/hosts file, you can imagine that it gets out of hand adding
+# hosts as they are created. So why not make use of a dynamic inventory?
+#From the main project dir, I want to mkdir ansible and then ansible/rmq (and make my playbook)
+
+mkdir ansible
+mkdir ansible/rmq
+cd ansible/rmq
+touch rmq_playbook.yml
+
+# Now, we also need to add an ansible.cfg  (if its not there) and a dir called group_vars/ with a file inside called tag_group_rmq.yaml.
+
+# The config will be used here to set a default of not prompting to ask whether or not you want to add a new host to known_hosts.
+
+# The group vars are used by ansible to help us use the group tag in our EC2 and apply a specific set of params to that group. So in this case, user and ssh private key
+
+printf "
+[defaults]
+host_key_checking = False" | sudo tee /etc/ansible/ansible.cfg
+
+sudo mkdir /etc/ansible/group_vars
+printf "
+---
+ansible_ssh_private_key_file: /var/lib/jenkins/.ssh/rabbitmq.pem
+ansible_user: ubuntu" |sudo tee /etc/ansible/group_vars/tag_group_rmq.yaml
+
+
+# We also want to create a file /etc/ansible/aws_ec2.yaml and open it.
+
+sudo touch /etc/ansible/aws_ec2.yaml
+
+# straight from Ansible's documentation (with some tweaks) we want to add
+
+plugin: amazon.aws.aws_ec2
+boto_profile: DevOpsUser
+regions:
+  - us-east-1
+strict: False
+keyed_groups:
+  - prefix: tag
+key: "tags"
+compose:
+ansible_host: ip_address
+
+#Then in the playbook (in our project directory ansible/rmq), let's add our basic Rabbit install and then run it
+# with the start command. The last two steps will be for our Admin panel and initial user.
+
+---
+    - name: Configure Jenkins Job
+      hosts: tag_group_rmq
+
+      tasks:
+
+        - name: Install RMQ
+          become: yes
+          shell: |
+            apt-get update -y
+            apt-get install curl gnupg -y
+            curl -fsSL https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc | apt-key add -
+            apt-get install apt-transport-https
+            tee /etc/apt/sources.list.d/bintray.rabbitmq.list <<EOF
+            deb https://dl.bintray.com/rabbitmq-erlang/debian bionic erlang
+            deb https://dl.bintray.com/rabbitmq/debian bionic main
+            EOF
+            apt-get update -y
+            apt-get install rabbitmq-server -y --fix-missing
+        
+        - name: Start RMQ
+          become: yes
+          shell: service rabbitmq-server start
+
+        - name: Enable RMQ Admin Dash
+          become: yes
+          shell: rabbitmq-plugins enable rabbitmq_management
+
+        - name: Add initial user
+          become: yes
+          shell: |
+            rabbitmqctl add_user sparlor Welcome1
+            rabbitmqctl set_user_tags sparlor administrator
+
+####
+Final steps and launch:
+
+#Let's add a last job for our RMQ and call it RabbitMQ_Configuration. 
+#All we need to do for this job is add out git url like in our first jenkins job, add a build trigger and then 
+# add a shell build step with the following:
+
+ansible-playbook -i /etc/ansible/aws_ec2.yaml ansible/rmq/rmq_playbook.yml
+
+
+# To trigger this, under the Build Trigger section, check the box that says Trigger builds remotely (e.g., from scripts) and then add an authentication token like...verysecureansibletoken
+
+# Use something more secure 🙂
+
+#Save it
+
+#Lastly, navigate back over to our first job and add an if statement nested inside the apply, as well as a new parameter
+
+#So in the RabbitMQ_Terraform_Build configure panel add a boolean parameter called Ansible and then make sure your shell command looks like this (Replace USER:TOKEN with your username and the token from the setup).
+
+if [ $Action = "apply" ]; then
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" -auto-approve terraform/rmq
+if [ $Ansible ]; then
+curl http://localhost:8080/job/RabbitMQ_Configuration/build?token=ansibletest \
+--user USER:TOKEN
+fi
+elif [ $Action = "plan" ]; then
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" terraform/rmq
+else
+terraform init terraform/rmq
+terraform $Action -var "name=$Name" -var "profile=DevOpsUser" -var "group=$Group" -auto-approve terraform/rmq
+fi
+
+# Now you are done. If you check that ansible box on apply and run it, terraform will build your ec2, and then on success run the ansible script!
+
+#At this point, you can navigate over to RabbitMQ's tutorial and complete it using your EC2 instance!
+
