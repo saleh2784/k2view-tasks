@@ -68,8 +68,8 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                playbook: "ansible/copy.yml",
-                inventory: "ansible/host.ini",
+                playbook: "ansible-projects/ansible/copy.yml",
+                inventory: "ansible-projects/ansible/host.ini",
                 become: 'yes',
                 extras: '-vvv',
                 disableHostKeyChecking: true,
@@ -86,8 +86,8 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                playbook: "ansible/run.yml",
-                inventory: "ansible/host.ini",
+                playbook: "ansible-projects/ansible/run.yml",
+                inventory: "ansible-projects/ansible/host.ini",
                 become: 'yes',
                 extras: '-vvv',
                 disableHostKeyChecking: true,
@@ -100,8 +100,8 @@ pipeline {
 		// 	    ansiblePlaybook(
         //         // installation:'ansible', 
         //         // limit:'',
-        //         playbook: "ansible/vim_${params.proccess}.yml",
-        //         inventory: "ansible/host.ini",
+        //         playbook: "ansible-projects/ansible/vim_${params.proccess}.yml",
+        //         inventory: "ansible-projects/ansible/host.ini",
         //         become: 'yes',
         //         extras: '-v',
         //         forks: 1,
@@ -116,3 +116,6 @@ pipeline {
     }
 
 }
+
+// run manually 
+// ansible-playbook name.yml -i host -vv 
