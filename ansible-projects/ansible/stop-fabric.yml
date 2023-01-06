@@ -1,6 +1,6 @@
 ---
 - name: stop fabric service
-  hosts: coe_fabric_servers
+  hosts: Devops
   # remote_user: fabric
   # become: yes
 
