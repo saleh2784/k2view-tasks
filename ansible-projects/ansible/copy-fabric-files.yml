@@ -1,0 +1,22 @@
+---
+- name: copy files to fabric
+  hosts: Devops
+  # remote_user: fabric
+  # become: yes
+
+  # vars:
+  #   my_var: my_value
+
+  tasks:
+    # - name: create a file
+    #   file: path=/tmp/hello_from_ansible.txt state=touch owner=fabric group=fabric mode=0775
+    
+    - name: copy file
+      copy:
+        src: /tmp/saleh2.sh
+        dest: /opt/apps/fabric/saleh2.sh
+        owner: fabric
+        group: fabric
+        mode: '0664'
+      become: yes
+
