@@ -1,0 +1,36 @@
+---
+- name: stop fabric service
+  hosts: coe_fabric_servers
+  # remote_user: fabric
+  # become: yes
+
+  # vars:
+  #   my_var: my_value
+
+  tasks:
+    # - name: create a file
+    #   file: path=/tmp/hello_from_ansible.txt state=touch owner=fabric group=fabric mode=0775
+    
+    # - name: copy file
+    #   copy:
+    #     src: Environments.k2fabEnv.xml
+    #     dest: /opt/apps/fabric/Environments.k2fabEnv.xml
+    #     owner: fabric
+    #     group: fabric
+    #     mode: '0664'
+    #   become: yes
+
+    - name: stop fabric service
+      tasks:
+      register: uname_out
+      shell: | 
+        
+        . /opt/apps/fabric/.bash_profile
+        fabric/scripts/iid_finder_stop.sh
+        sleep 5
+        k2fabric stop
+      become: yes
+      become_user: fabric
+
+    - debug:
+        var: uname_out.stdout_lines
