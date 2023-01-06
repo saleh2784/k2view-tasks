@@ -30,8 +30,8 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                playbook: "ansible/vim_install.yml",
-                inventory: "ansible/host.ini",
+                playbook: "ansible-projects/ansible/vim_install.yml",
+                inventory: "ansible-projects/ansible/host.ini",
                 become: 'yes',
                 extras: '-vvv',
                 forks: 1,
@@ -49,8 +49,8 @@ pipeline {
         }
             steps{
             ansiblePlaybook(
-                playbook: "ansible/vim_uninstall.yml",
-                inventory: "ansible/host.ini",
+                playbook: "ansible-projects/ansible/vim_uninstall.yml",
+                inventory: "ansible-projects/ansible/host.ini",
                 become: 'yes',
                 extras: '-vvv',
                 forks: 1,
