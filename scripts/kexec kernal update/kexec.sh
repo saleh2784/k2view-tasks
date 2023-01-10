@@ -1,4 +1,6 @@
 #!/bin/bash 
+ 
+uname -r > old_version
 
 echo "installing kexec & updating the kernel ..........."
 sudo yum install kexec-tools && sudo yum update kernel -y
