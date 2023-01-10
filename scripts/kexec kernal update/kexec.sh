@@ -7,9 +7,11 @@ sudo yum install kexec-tools && sudo yum update kernel -y
 
 echo "booting vmlinuz .........."
 sudo kexec -l /boot/vmlinuz-$KERNEL_VERSION --initrd=/boot/initramfs-$KERNEL_VERSION.img --reuse-cmdline
+#sudo kexec -u && kexec -l /boot/vmlinuz-$KERNEL_VERSION --initrd=/boot/initramfs-$KERNEL_VERSION.img --reuse-cmdline
 
 sleep 10
 
 echo "kexec reloading ......."
 sudo kexec -u && sudo systemctl kexec
 sleep 120
+
